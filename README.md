@@ -8,7 +8,7 @@ The client performs periodic checks for potentially unauthorized files, loaded m
 
 The server validates client messages and tracks the verification session using fresh challenges, heartbeats, and acknowledgements. It then exposes callbacks to Pawn scripts so the game mode can decide how to handle timeouts, recoveries, and reports.
 
-Two client configurations are planned/provided: one that allows CLEO/SAMPFUNCS and one that blocks them.
+Two client variants are available: one that allows CLEO/SAMPFUNCS and one that blocks them.
 
 STP-Vanguard is a detection and reporting layer. It does not guarantee that a player's computer is completely free of cheats, and server-side gameplay checks should remain in place.
 
@@ -26,7 +26,7 @@ Client จะตรวจสอบเป็นระยะ เช่น ไฟ�
 
 Server ตรวจสอบรูปแบบและความถูกต้องของข้อมูล พร้อมติดตาม session ด้วย challenge ที่สร้างใหม่ การส่ง heartbeat และการตอบรับรายงาน จากนั้นส่ง callback ให้สคริปต์ Pawn เพื่อให้เกมโหมดกำหนดวิธีจัดการกรณีขาดการเชื่อมต่อ การกลับมาเชื่อมต่อ และรายงานการตรวจพบ
 
-มี Client สองรูปแบบ ได้แก่รุ่นที่อนุญาต CLEO/SAMPFUNCS และรุ่นที่ไม่อนุญาต
+มี Client สองรูปแบบให้เลือก ได้แก่รุ่นที่อนุญาต CLEO/SAMPFUNCS และรุ่นที่ไม่อนุญาต
 
 STP-Vanguard เป็นระบบช่วยตรวจจับและรายงาน ไม่สามารถรับประกันได้ว่าคอมพิวเตอร์ของผู้เล่นปลอดจากโปรแกรมโกงทั้งหมด เซิร์ฟเวอร์ควรคงการตรวจสอบพฤติกรรมการเล่นไว้ด้วย
 
