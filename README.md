@@ -154,12 +154,19 @@ The scripts expect the database connection handle `g_SQL` and the MySQL plugin/i
 | `AC_STP (nocleo)/` | No-CLEO client variant with the same server/plugin components |
 | `สคริปฝั่งเซิฟ/` | Example Pawn game mode, dynamic-cheat administration script, and include |
 | `database/` | MySQL schema and setup notes |
-| `docs/images/` | Cropped project and database illustrations |
+| `docs/images/` | Project screenshots and database illustrations |
 
 The server-side menu screenshots show the example flow for selecting a dynamic-cheat action and reviewing a detection list:
 
 ![Pawn dynamic cheat menu](docs/images/admin-menu.png)
 ![Dynamic detection list](docs/images/dynamic-detection-list.png)
+
+### Client screenshots
+
+The first image shows an example in-game ban notice; its HWID value is masked for privacy. The second points out the `STP.Vanguard.asi` client file in a game folder.
+
+![Example in-game ban notice with the HWID masked](docs/images/ban-notice-example.png)
+![Example location of the STP-Vanguard client file](docs/images/client-file-location.png)
 
 ## Testing and known limits
 
@@ -309,12 +316,19 @@ Pawn script ต้องใช้ handle ฐานข้อมูล `g_SQL` แ
 | `AC_STP (nocleo)/` | Client รุ่นไม่อนุญาต CLEO พร้อมส่วน Server/Plugin ชุดเดียวกัน |
 | `สคริปฝั่งเซิฟ/` | ตัวอย่าง Pawn game mode, สคริปต์จัดการ dynamic cheat และ include |
 | `database/` | SQL schema และวิธีเตรียมฐานข้อมูล |
-| `docs/images/` | ภาพประกอบโปรเจกต์และโครงสร้างฐานข้อมูลที่ crop แล้ว |
+| `docs/images/` | ภาพหน้าจอโปรเจกต์และภาพประกอบฐานข้อมูล |
 
 ภาพด้านล่างเป็นตัวอย่างเมนู Pawn สำหรับจัดการ dynamic cheat และหน้ารายการตรวจพบ:
 
 ![เมนูจัดการ dynamic cheat](docs/images/admin-menu.png)
 ![ตัวอย่างรายการตรวจพบ](docs/images/dynamic-detection-list.png)
+
+### ภาพตัวอย่างฝั่ง Client
+
+ภาพแรกเป็นตัวอย่างหน้าต่างแจ้งแบนในเกม โดยปกปิดค่า HWID เพื่อความเป็นส่วนตัว ภาพที่สองชี้ตำแหน่งไฟล์ Client `STP.Vanguard.asi` ในโฟลเดอร์เกม
+
+![ตัวอย่างหน้าต่างแจ้งแบนในเกม โดยปกปิด HWID](docs/images/ban-notice-example.png)
+![ตัวอย่างตำแหน่งไฟล์ Client ของ STP-Vanguard](docs/images/client-file-location.png)
 
 ## การทดสอบและข้อจำกัดที่ทราบ
 
