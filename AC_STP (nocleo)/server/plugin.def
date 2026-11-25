@@ -1,0 +1,10 @@
+﻿LIBRARY STP-Vanguard
+VERSION 1.1
+EXPORTS
+	Load
+	Unload
+	AmxLoad
+	AmxUnload
+	Supports
+
+	ProcessTick
