@@ -152,7 +152,7 @@ The scripts expect the database connection handle `g_SQL` and the MySQL plugin/i
 | --- | --- |
 | `AC_STP/` | CLEO-allowed client, Windows server plugin, shared protocol, project files, and binaries |
 | `AC_STP (nocleo)/` | No-CLEO client variant with the same server/plugin components |
-| `สคริปฝั่งเซิฟ/` | Example Pawn game mode, dynamic-cheat administration script, and include |
+| `server-scripts/` | Example Pawn game mode, dynamic-cheat administration script, and include |
 | `database/` | MySQL schema and setup notes |
 | `docs/images/` | Project screenshots and database illustrations |
 
@@ -314,7 +314,7 @@ Pawn script ต้องใช้ handle ฐานข้อมูล `g_SQL` แ
 | --- | --- |
 | `AC_STP/` | Client รุ่นอนุญาต CLEO, Server Plugin, shared protocol, project files และ binaries |
 | `AC_STP (nocleo)/` | Client รุ่นไม่อนุญาต CLEO พร้อมส่วน Server/Plugin ชุดเดียวกัน |
-| `สคริปฝั่งเซิฟ/` | ตัวอย่าง Pawn game mode, สคริปต์จัดการ dynamic cheat และ include |
+| `server-scripts/` | ตัวอย่าง Pawn game mode, สคริปต์จัดการ dynamic cheat และ include |
 | `database/` | SQL schema และวิธีเตรียมฐานข้อมูล |
 | `docs/images/` | ภาพหน้าจอโปรเจกต์และภาพประกอบฐานข้อมูล |
 
