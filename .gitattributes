@@ -1,0 +1,3 @@
+# Store Thai Pawn source as UTF-8 for GitHub's web viewer; checkout as CP874 for SA-MP/Pawn tools.
+*.pwn working-tree-encoding=CP874 eol=crlf
+*.inc working-tree-encoding=CP874 eol=crlf

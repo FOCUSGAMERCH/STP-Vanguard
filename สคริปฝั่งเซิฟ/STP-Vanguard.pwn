@@ -4,56 +4,56 @@
 #include <a_mysql>
 #include <anticheat>  // ac.inc
 
-// --- [ ��õ�駤�ҵ���� ] ---
-new gPlayerAntiCheatStatus[MAX_PLAYERS char];   // 0 = �����, 1 = ���, 2 = ����ش
+// --- [ การตั้งค่าตัวแปร ] ---
+new gPlayerAntiCheatStatus[MAX_PLAYERS char];   // 0 = ไม่มี, 1 = เก่า, 2 = ล่าสุด
 new bool:gPlayerGotACMessage[MAX_PLAYERS char];
 new bool:gPlayerHasSpawned[MAX_PLAYERS char];
 new gPendingCheatID[MAX_PLAYERS];
 new gPlayerHWID[MAX_PLAYERS][65];
 new gPlayerHWIDV2[MAX_PLAYERS][65];
-new gPlayerACType[MAX_PLAYERS];                 // 0 = ����, 1 = nocleo, -1 = �ѧ������
+new gPlayerACType[MAX_PLAYERS];                 // 0 = ปกติ, 1 = nocleo, -1 = ยังไม่รู้
 
 new bool:gPlayerHWIDSaved[MAX_PLAYERS];
 new bool:gPlayerHWIDSavedV2[MAX_PLAYERS];
 new gPlayerACStatusString[MAX_PLAYERS][128];
 
 // ============================================================================
-// [�к� Dynamic Cheat Scan] ��˹����ẹ/�� ��������������ѹ��
+// [ระบบ Dynamic Cheat Scan] กำหนดไฟล์แบน/เตะ ฝั่งเซิร์ฟเวอร์ได้ทันที
 // ============================================================================
 
 enum E_DYNAMIC_CHEAT {
-    CheatHash[33],   // MD5 �ͧ��� (��ͧ 32 ����ѡ�þ�����˭�)
-    CheatName[64],   // �����÷��������͹
-    CheatAction      // 1 = �� (Kick), 2 = ẹ�ѭ��+HWID (Ban)
+    CheatHash[33],   // MD5 ของไฟล์ (ต้อง 32 ตัวอักษรพิมพ์ใหญ่)
+    CheatName[64],   // ชื่อโปรที่ใช้แจ้งเตือน
+    CheatAction      // 1 = เตะ (Kick), 2 = แบนบัญชี+HWID (Ban)
 };
 
-// ����������ͧ���ŧ�ç�������� (����ͧ�Ѿവ Client ����)
+// เพิ่มไฟล์ที่ต้องการลงตรงนี้ได้เลย (ไม่ต้องอัพเดต Client ใหม่)
 new const DynamicCheats[][E_DYNAMIC_CHEAT] = {
-    {"479F790D850AA208A73787411C1DF00", "NormalMapFix.asidd", 1}, // 2 = ẹ
-    {"42C9AA8BE4B490E1F9CDC31D115C2444", "Ddxz.exe (External)", 1} // 1 = �� // ����ͧ�����ʴ����ͷ�������١����ʴ� ������Ǩ��:  ���١��ͧ���·� ��ҧ��ͧ�� ���������ѹ�����Т���ѹ�á NormalMapfix.asi ���ҡ�
+    {"479F790D850AA208A73787411C1DF00", "NormalMapFix.asidd", 1}, // 2 = แบน
+    {"42C9AA8BE4B490E1F9CDC31D115C2444", "Ddxz.exe (External)", 1} // 1 = เตะ // ที่ต้องแก้คือแสดงชื่อที่เตะไม่ถูกและแสดง ไฟล์ที่ตรวจพบ:  ไม่ถูกต้องค่อยทำ ว่างต้องทำ เช่นเราใส่อันนี้แต่จะขึ้นอันแรก NormalMapfix.asi งงมากก
 };
 
-// �������������Ѻ�� Dynamic Cheat ����Ǩ�� (����� gPendingCheatID)
-new gPendingDynamicCheat[MAX_PLAYERS];        // �� index � DynamicCheats
-new gPendingDynamicFileName[MAX_PLAYERS][128]; // �纪�������ԧ
-new gPendingDynamicMD5[MAX_PLAYERS][33];       // �� MD5
+// ตัวแปรใหม่สำหรับเก็บ Dynamic Cheat ที่ตรวจพบ (คล้าย gPendingCheatID)
+new gPendingDynamicCheat[MAX_PLAYERS];        // เก็บ index ใน DynamicCheats
+new gPendingDynamicFileName[MAX_PLAYERS][128]; // เก็บชื่อไฟล์จริง
+new gPendingDynamicMD5[MAX_PLAYERS][33];       // เก็บ MD5
 
 // ============================================================================
-// Callback ���� - OnPlayerDetectedDynamicFile
+// Callback ใหม่ - OnPlayerDetectedDynamicFile
 // ============================================================================
 /*public OnPlayerDetectedDynamicFile(playerid, fileType, const filename[], const md5hash[])
 {
     if (!IsPlayerConnected(playerid)) 
         return 1;
 
-    // ��Ҽ������ѧ��� spawn ? ������͹ (����͹�к� cheatid ���)
+    // ถ้าผู้เล่นยังไม่ spawn ? เก็บไว้ก่อน (เหมือนระบบ cheatid เดิม)
     if (!gPlayerHasSpawned{playerid})
     {
         for (new i = 0; i < sizeof(DynamicCheats); i++)
         {
             if (!strcmp(md5hash, DynamicCheats[i][CheatHash], true))
             {
-                gPendingDynamicCheat[playerid] = i;                    // �� index
+                gPendingDynamicCheat[playerid] = i;                    // เก็บ index
                 strcopy(gPendingDynamicFileName[playerid], filename);
                 strcopy(gPendingDynamicMD5[playerid], md5hash);
                 return 1;
@@ -62,7 +62,7 @@ new gPendingDynamicMD5[MAX_PLAYERS][33];       // �� MD5
         return 1;
     }
 
-    // ��� spawn ���� ? �����żŷѹ��
+    // ถ้า spawn แล้ว ? ประมวลผลทันที
     ProcessDynamicCheatDetection(playerid, fileType, filename, md5hash);
     return 1;
 }
@@ -79,19 +79,19 @@ stock ProcessDynamicCheatDetection(playerid, fileType, const filename[], const m
             new acStatus[128];
             strcopy(acStatus, gPlayerACStatusString[playerid]);
 
-            if (DynamicCheats[i][CheatAction] == 2) // ẹ
+            if (DynamicCheats[i][CheatAction] == 2) // แบน
             {
-                format(str, sizeof(str), "{B22222}[{DCDCDC}STP-Vanguard{DCDCDC}{B22222}]{FFFFFF} %s �١ẹ �����: ��Ǩ������ѹ���� %s (%s)", 
+                format(str, sizeof(str), "{B22222}[{DCDCDC}STP-Vanguard{DCDCDC}{B22222}]{FFFFFF} %s ถูกแบน ข้อหา: ตรวจพบไฟล์อันตราย %s (%s)", 
                     GetPlayerNameEx(playerid), DynamicCheats[i][CheatName], filename);
                 SendClientMessageToAll(-1, str);
 
                 // Discord Log
                 new ip[16]; GetPlayerIp(playerid, ip, sizeof(ip));
-                format(str, sizeof(str), "[STP-Vanguard (Dynamic)] : ������ %s �١ẹ ���˵�: %s\n:file_folder: ������Ǩ��: %s\n[:gear:] : (ID: %d)\n[:round_pushpin:] : �;��� : %s\n[:timer:] : �١ẹ�͹���� : %s",
+                format(str, sizeof(str), "[STP-Vanguard (Dynamic)] : ผู้เล่น %s ถูกแบน สาเหตุ: %s\n:file_folder: ไฟล์ที่ตรวจพบ: %s\n[:gear:] : (ID: %d)\n[:round_pushpin:] : ไอพีเน็ต : %s\n[:timer:] : ถูกแบนตอนเวลา : %s",
                     GetPlayerNameEx(playerid), DynamicCheats[i][CheatName], filename, playerData[playerid][pID], ip, ReturnDateTime(0));
                 DCC_SendChannelMessage(DCC_FindChannelById("1455499307384832074"), str);
 
-                // ẹ HWID + �ѭ��
+                // แบน HWID + บัญชี
                 new escReason[128], escName[MAX_PLAYER_NAME * 2], query[1024];
                 mysql_escape_string(DynamicCheats[i][CheatName], escReason);
                 mysql_escape_string(GetPlayerNameEx(playerid), escName);
@@ -109,22 +109,22 @@ stock ProcessDynamicCheatDetection(playerid, fileType, const filename[], const m
 
                 DelayedKick(playerid);
             }
-            else if (DynamicCheats[i][CheatAction] == 1) // ��
+            else if (DynamicCheats[i][CheatAction] == 1) // เตะ
             {
-                /*format(str, sizeof(str), "{B22222}[{DCDCDC}STP-Vanguard{DCDCDC}{B22222}]{FFFFFF} %s �١���͡�ҡ��������� �����: ��Ǩ������� %s (%s)", 
+                /*format(str, sizeof(str), "{B22222}[{DCDCDC}STP-Vanguard{DCDCDC}{B22222}]{FFFFFF} %s ถูกเตะออกจากเซิร์ฟเวอร์ ข้อหา: ตรวจพบโปรแกรม %s (%s)", 
                     GetPlayerNameEx(playerid), DynamicCheats[i][CheatName], filename);
                 SendClientMessageToAll(-1, str);*/
 
-                //SendClientMessage(playerid, 0xFF0000FF, "������");
+                //SendClientMessage(playerid, 0xFF0000FF, "โปรเพื่อ");
 
 
-                /*format(str, sizeof(str), "{B22222}[{DCDCDC}STP-Vanguard{DCDCDC}{B22222}]{FFFFFF} %s �١���͡�ҡ��������� �����: %s", 
+                /*format(str, sizeof(str), "{B22222}[{DCDCDC}STP-Vanguard{DCDCDC}{B22222}]{FFFFFF} %s ถูกเตะออกจากเซิร์ฟเวอร์ ข้อหา: %s", 
                     GetPlayerNameEx(playerid), DynamicCheats[i][CheatName]);
                 SendClientMessageToAll(-1, str);
 
-                // Discord Log (��)
+                // Discord Log (เตะ)
                 new ip[16]; GetPlayerIp(playerid, ip, sizeof(ip));
-                format(str, sizeof(str), "[STP-Vanguard (Dynamic)] : ������ %s �١�� ���˵�: %s\n:file_folder: ������Ǩ��: %s\n[:gear:] : (ID: %d)",
+                format(str, sizeof(str), "[STP-Vanguard (Dynamic)] : ผู้เล่น %s ถูกเตะ สาเหตุ: %s\n:file_folder: ไฟล์ที่ตรวจพบ: %s\n[:gear:] : (ID: %d)",
                     GetPlayerNameEx(playerid), DynamicCheats[i][CheatName], filename, playerData[playerid][pID]);
                 DCC_SendChannelMessage(DCC_FindChannelById("1455499187759218790"), str);
 
@@ -136,7 +136,7 @@ stock ProcessDynamicCheatDetection(playerid, fileType, const filename[], const m
     return 1;
 }*/
 
-// --- [ Callbacks �ҡ Plugin ] ---
+// --- [ Callbacks จาก Plugin ] ---
 public OnPlayerAntiCheatConnect(playerid, bool:is_latest_version)
 {
     gPlayerAntiCheatStatus{playerid} = is_latest_version ? 2 : 1;
@@ -151,20 +151,20 @@ public OnPlayerAntiCheatType(playerid, clientType)
     {
         if(gPlayerAntiCheatStatus{playerid} == 1)
         {
-            SendClientMessage(playerid, 0xFF0000FF, "{B22222}[{DCDCDC}STP-Vanguard{DCDCDC}{B22222}]{FFFFFF} {CD5C5C}���ѹ�âͧ�س�������ѹ���{FFFFFF} ��سҴ�ǹ���Ŵ����ҡ {4169E1}Discord ");
-            strcopy(gPlayerACStatusString[playerid], "�����ѹ���ѹ����� (������ѻവ)");
+            SendClientMessage(playerid, 0xFF0000FF, "{B22222}[{DCDCDC}STP-Vanguard{DCDCDC}{B22222}]{FFFFFF} {CD5C5C}ไฟล์กันโปรของคุณเป็นเวอร์ชันเก่า{FFFFFF} กรุณาดาวน์โหลดใหม่จาก {4169E1}Discord ");
+            strcopy(gPlayerACStatusString[playerid], "เวอร์ชันไฟล์กันโปรเก่า (แจ้งให้อัปเดต)");
         }
         else if(gPlayerAntiCheatStatus{playerid} == 2)
         {
             if(clientType == 1)
             {
-                SendClientMessage(playerid, 0x00FF00FF, "{B22222}[{DCDCDC}STP-Vanguard{DCDCDC}{B22222}]{FFFFFF} �к���ͧ�ѹ�ӧҹ����ó� ({00FF00}�����ѹ����ش{FFFFFF}) ({00FF7F}v.nocleo{FFFFFF})");
-                strcopy(gPlayerACStatusString[playerid], "�к���ͧ�ѹ�ӧҹ����ó� (�����ѹ����ش) (nocleo)");
+                SendClientMessage(playerid, 0x00FF00FF, "{B22222}[{DCDCDC}STP-Vanguard{DCDCDC}{B22222}]{FFFFFF} ระบบป้องกันทำงานสมบูรณ์ ({00FF00}เวอร์ชันล่าสุด{FFFFFF}) ({00FF7F}v.nocleo{FFFFFF})");
+                strcopy(gPlayerACStatusString[playerid], "ระบบป้องกันทำงานสมบูรณ์ (เวอร์ชันล่าสุด) (nocleo)");
             }
             else
             {
-                SendClientMessage(playerid, 0x00FF00FF, "{B22222}[{DCDCDC}STP-Vanguard{DCDCDC}{B22222}]{FFFFFF} �к���ͧ�ѹ�ӧҹ����ó� ({00FF00}�����ѹ����ش{FFFFFF})");
-                strcopy(gPlayerACStatusString[playerid], "�к���ͧ�ѹ�ӧҹ����ó� (�����ѹ����ش)");
+                SendClientMessage(playerid, 0x00FF00FF, "{B22222}[{DCDCDC}STP-Vanguard{DCDCDC}{B22222}]{FFFFFF} ระบบป้องกันทำงานสมบูรณ์ ({00FF00}เวอร์ชันล่าสุด{FFFFFF})");
+                strcopy(gPlayerACStatusString[playerid], "ระบบป้องกันทำงานสมบูรณ์ (เวอร์ชันล่าสุด)");
             }
         }
         gPlayerGotACMessage{playerid} = true;
@@ -183,7 +183,7 @@ public OnPlayerCheckHwid(playerid, const hwid[])
     mysql_format(g_SQL, query, sizeof(query), "SELECT * FROM `banned_hwids` WHERE `hwid` = '%e' LIMIT 1", hwid);
     mysql_tquery(g_SQL, query, "CheckBannedHWID", "is", playerid, hwid);
 
-    //printf("[AC] Player %d sent HWID: %s", playerid, hwid); // �Դá printf
+    //printf("[AC] Player %d sent HWID: %s", playerid, hwid); // ปิดรก printf
     return 1;
 }*/
 
@@ -192,12 +192,12 @@ public OnPlayerCheckHwid(playerid, const hwid[]) // 11.1/2569
 {
     format(gPlayerHWID[playerid], 65, "%s", hwid);
 
-    // ��Ǩ�ͺ HWID ẹ��͹
+    // ตรวจสอบ HWID แบนก่อน
     new query[128];
     mysql_format(g_SQL, query, sizeof(query), "SELECT * FROM `banned_hwids` WHERE `hwid` = '%e' AND `Ban` = 1 LIMIT 1", hwid); 
-    mysql_tquery(g_SQL, query, "CheckBannedHWID", "i", playerid);  // ���� playerid ��������ͧ�� hwid � callback �ա
+    mysql_tquery(g_SQL, query, "CheckBannedHWID", "i", playerid);  // ส่งแค่ playerid เพราะไม่ต้องใช้ hwid ใน callback อีก
 
-    // �Ѿഷ HWID �ͧ������㹵��ҧ players
+    // อัพเดท HWID ของผู้เล่นในตาราง players
     new playerName[MAX_PLAYER_NAME];
     GetPlayerName(playerid, playerName, sizeof(playerName));
 
@@ -211,21 +211,21 @@ public OnPlayerCheckHwid(playerid, const hwid[])
 {
     format(gPlayerHWID[playerid], 65, "%s", hwid);
     CheckHWIDBan(playerid);
-    // ��Ǩ�ͺẹ��͹ (�ѹ����ѧ���ӷѹ������� ����������ͧ������ʹ���)
+    // ตรวจสอบแบนก่อน (อันนี้ยังคงทำทันทีได้เลย เพราะเป็นเรื่องความปลอดภัย)
     new query[128];
     mysql_format(g_SQL, query, sizeof(query), "SELECT * FROM `banned_hwids` WHERE `hwid` = '%e' AND `Ban` = 1 LIMIT 1", hwid);
     mysql_tquery(g_SQL, query, "CheckBannedHWID", "i", playerid);
 
-    // ���Һѹ�֡�ç�������!!
+    // อย่าบันทึกตรงนี้แล้ว!!
     return 1;
 }
 
 
-public OnPlayerCheckHwidV2(playerid, const hwidv2[]) // ����纤������ 
+public OnPlayerCheckHwidV2(playerid, const hwidv2[]) // การเก็บค่าใหม่ 
 {
     format(gPlayerHWIDV2[playerid], 65, "%s", hwidv2);
-    CheckHWIDBanv2(playerid); //  HWIDv2 (�ѹ bypass ��)
-    // ���Һѹ�֡�ç�������!!
+    CheckHWIDBanv2(playerid); //  HWIDv2 (กัน bypass มโน)
+    // อย่าบันทึกตรงนี้แล้ว!!
     return 1;
 }
 
@@ -237,7 +237,7 @@ public OnPlayerCheckHwidV2(playerid, const hwidv2[]) // ����纤������
 
 stock CheckHWIDBan(playerid)
 {
-    if(strlen(gPlayerHWID[playerid]) < 10) // �ѧ����� HWID ���� HWID �������ó�
+    if(strlen(gPlayerHWID[playerid]) < 10) // ยังไม่มี HWID หรือ HWID ไม่สมบูรณ์
         return 0;
 
     new query[256];
@@ -271,14 +271,14 @@ public HWIDBans_Load(playerid)
         cache_get_value_name(0, "playerBanDate", banDate, sizeof(banDate));
 
         format(string, sizeof(string),
-            "{FF6600}�س�١ẹ�͡�ҡ�Կ�����\n\n\
-            {FFFFFF}���ͼ��١ẹ: {FFFF00}%s\n\
-            {FFFFFF}HWID ���١ẹ: {FFFF00}%s\n\
-            {FFFFFF}���˵�: {FFFF00}%s\n\
-            {FFFFFF}�ѹ���ẹ: {FFFF00}%s",
+            "{FF6600}คุณถูกแบนออกจากเซิฟเวอร์\n\n\
+            {FFFFFF}ชื่อผู้ถูกแบน: {FFFF00}%s\n\
+            {FFFFFF}HWID ที่ถูกแบน: {FFFF00}%s\n\
+            {FFFFFF}สาเหตุ: {FFFF00}%s\n\
+            {FFFFFF}วันที่แบน: {FFFF00}%s",
             banName, banHWID, banReason, banDate);
 
-        // ? �觢�ͤ������������
+        // ? ส่งข้อความแค่ครั้งเดียว
         if (!g_HwidBanMsgSent[playerid])
         {
             g_HwidBanMsgSent[playerid] = true;
@@ -286,16 +286,16 @@ public HWIDBans_Load(playerid)
             SendClientMessageEx(playerid, COLOR_WHITE, "");
             SendClientMessageEx(playerid, COLOR_WHITE,
                 "{66FFFF}[{FFFFFF}{FF0000}Training Park{FFFFFF}{66FFFF}]\
-{FFFFFF}{FFFF00} ����ͧ�س�١ẹ �ô�Դ����ʹ�Թ���ͻŴẹ!");
+{FFFFFF}{FFFF00} คอมของคุณถูกแบน โปรดติดต่อแอดมินเพื่อปลดแบน!");
             SendClientMessageEx(playerid, COLOR_WHITE,
                 "{66FFFF}[{FFFFFF}{FF0000}Training Park{FFFFFF}{66FFFF}]\
-{FFFFFF}{FFFF00} �������ö�������Կ������� ���ͧ�ҡ�ʹբͧ�س�١ẹ");
+{FFFFFF}{FFFF00} ไม่สามารถเข้าสู่เซิฟเวอร์ได้ เนื่องจากไอดีของคุณถูกแบน");
         }
 
         Dialog_Show(playerid, DIALOG_BANCHECK, DIALOG_STYLE_MSGBOX,
             "STP.Vanguard-Ban",
             string,
-            "�Դ", "");
+            "ปิด", "");
 
         DelayedKick(playerid);
         return 1;
@@ -309,7 +309,7 @@ public HWIDBans_Load(playerid)
 /*
 stock CheckHWIDBanv2(playerid)
 {
-    if(strlen(gPlayerHWIDV2[playerid]) < 10) // �ѧ����� HWID ���� HWID �������ó�
+    if(strlen(gPlayerHWIDV2[playerid]) < 10) // ยังไม่มี HWID หรือ HWID ไม่สมบูรณ์
         return 0;
 
     new query[256];
@@ -343,14 +343,14 @@ public HWIDBans_Loadv2(playerid)
         cache_get_value_name(0, "playerBanDate", banDate, sizeof(banDate));
 
         format(string, sizeof(string),
-            "{FF6600}�س�١ẹ�͡�ҡ�Կ�����\n\n\
-            {FFFFFF}���ͼ��١ẹ: {FFFF00}%s\n\
-            {FFFFFF}HWID ���١ẹ: {FFFF00}%s\n\
-            {FFFFFF}���˵�: {FFFF00}%s\n\
-            {FFFFFF}�ѹ���ẹ: {FFFF00}%s",
+            "{FF6600}คุณถูกแบนออกจากเซิฟเวอร์\n\n\
+            {FFFFFF}ชื่อผู้ถูกแบน: {FFFF00}%s\n\
+            {FFFFFF}HWID ที่ถูกแบน: {FFFF00}%s\n\
+            {FFFFFF}สาเหตุ: {FFFF00}%s\n\
+            {FFFFFF}วันที่แบน: {FFFF00}%s",
             banName, banHWID, banReason, banDate);
 
-        // ? �觢�ͤ������������
+        // ? ส่งข้อความแค่ครั้งเดียว
         if (!g_HwidBanMsgSentv2[playerid])
         {
             g_HwidBanMsgSentv2[playerid] = true;
@@ -358,15 +358,15 @@ public HWIDBans_Loadv2(playerid)
             SendClientMessageEx(playerid, COLOR_WHITE, "");
             SendClientMessageEx(playerid, COLOR_WHITE,
                 "{66FFFF}[{FFFFFF}{FF0000}Training Park{FFFFFF}{66FFFF}]\
-{FFFFFF}{FFFF00} ����ͧ�س�١ẹ �ô�Դ����ʹ�Թ���ͻŴẹ!");
+{FFFFFF}{FFFF00} คอมของคุณถูกแบน โปรดติดต่อแอดมินเพื่อปลดแบน!");
             SendClientMessageEx(playerid, COLOR_WHITE,
                 "{66FFFF}[{FFFFFF}{FF0000}Training Park{FFFFFF}{66FFFF}]\
-{FFFFFF}{FFFF00} �������ö�������Կ������� ���ͧ�ҡ�ʹբͧ�س�١ẹ");
+{FFFFFF}{FFFF00} ไม่สามารถเข้าสู่เซิฟเวอร์ได้ เนื่องจากไอดีของคุณถูกแบน");
 
 
             /*SendClientMessageEx(playerid, COLOR_WHITE, "");
             SendClientMessageEx(playerid, COLOR_RED,
-                "{B22222}[{DCDCDC}STP-Vanguard{DCDCDC}{B22222}]{FFFFFF} �ͧ�Դ�з����âͧ�ͧ��ͧ��� �ͧ�⹢ͧ�ͧ��������褹�������");*/
+                "{B22222}[{DCDCDC}STP-Vanguard{DCDCDC}{B22222}]{FFFFFF} เองคิดจะทำอะไรของเองน้องชาย ของมโนของเองอะเก็บไว้ใช่คนเดียวเถอะ");*/
 
        /* }
 
@@ -374,7 +374,7 @@ public HWIDBans_Loadv2(playerid)
         Dialog_Show(playerid, DIALOG_BANCHECK, DIALOG_STYLE_MSGBOX,
             "STP.Vanguard-Ban",
             string,
-            "�Դ", "");
+            "ปิด", "");
 
         DelayedKick(playerid);
         return 1;
@@ -401,33 +401,33 @@ stock CheckHWIDBanv2(playerid)
 }
 new bool:g_HwidBanMsgSentv2[MAX_PLAYERS];
 
-// ====================== ��ǹ��������ѡ ======================
+// ====================== ส่วนที่แก้ไขหลัก ======================
 forward HWIDBans_Loadv2(playerid);
 public HWIDBans_Loadv2(playerid)
 {
     if (cache_num_rows() > 0)
     {
         new
-            banHWID[65],           // ���� playerHWID ����
+            banHWID[65],           // ใช้เก็บ playerHWID ปกติ
             banName[MAX_PLAYER_NAME],
             banReason[128],
             banDate[24],
             string[600];
 
         cache_get_value_name(0, "playerName", banName, sizeof(banName));
-        cache_get_value_name(0, "playerHWID", banHWID, sizeof(banHWID));     // ? ����¹�� playerHWID
+        cache_get_value_name(0, "playerHWID", banHWID, sizeof(banHWID));     // ? เปลี่ยนเป็น playerHWID
         cache_get_value_name(0, "playerBanReason", banReason, sizeof(banReason));
         cache_get_value_name(0, "playerBanDate", banDate, sizeof(banDate));
 
         format(string, sizeof(string),
-            "{FF6600}�س�١ẹ�͡�ҡ�Կ�����\n\n\
-            {FFFFFF}���ͼ��١ẹ: {FFFF00}%s\n\
-            {FFFFFF}HWID ���١ẹ: {FFFF00}%s\n\
-            {FFFFFF}���˵�: {FFFF00}%s\n\
-            {FFFFFF}�ѹ���ẹ: {FFFF00}%s",
+            "{FF6600}คุณถูกแบนออกจากเซิฟเวอร์\n\n\
+            {FFFFFF}ชื่อผู้ถูกแบน: {FFFF00}%s\n\
+            {FFFFFF}HWID ที่ถูกแบน: {FFFF00}%s\n\
+            {FFFFFF}สาเหตุ: {FFFF00}%s\n\
+            {FFFFFF}วันที่แบน: {FFFF00}%s",
             banName, banHWID, banReason, banDate);
 
-        // ��ͤ�������͹ (�觤�������)
+        // ข้อความแจ้งเตือน (ส่งครั้งเดียว)
         if (!g_HwidBanMsgSentv2[playerid])
         {
             g_HwidBanMsgSentv2[playerid] = true;
@@ -435,10 +435,10 @@ public HWIDBans_Loadv2(playerid)
             SendClientMessageEx(playerid, COLOR_WHITE, "");
             SendClientMessageEx(playerid, COLOR_WHITE,
                 "{66FFFF}[{FFFFFF}{FF0000}Training Park{FFFFFF}{66FFFF}]\
-{FFFFFF}{FFFF00} ����ͧ�س�١ẹ �ô�Դ����ʹ�Թ���ͻŴẹ!");
+{FFFFFF}{FFFF00} คอมของคุณถูกแบน โปรดติดต่อแอดมินเพื่อปลดแบน!");
             SendClientMessageEx(playerid, COLOR_WHITE,
                 "{66FFFF}[{FFFFFF}{FF0000}Training Park{FFFFFF}{66FFFF}]\
-{FFFFFF}{FFFF00} �������ö�������Կ������� ���ͧ�ҡ�ʹբͧ�س�١ẹ");
+{FFFFFF}{FFFF00} ไม่สามารถเข้าสู่เซิฟเวอร์ได้ เนื่องจากไอดีของคุณถูกแบน");
 
 
         }
@@ -446,7 +446,7 @@ public HWIDBans_Loadv2(playerid)
         Dialog_Show(playerid, DIALOG_BANCHECK, DIALOG_STYLE_MSGBOX,
             "STP.Vanguard-Ban",
             string,
-            "�Դ", "");
+            "ปิด", "");
 
         DelayedKick(playerid);
         return 1;
@@ -478,7 +478,7 @@ new gEscName[64];
 new gReasonStr[256];
 new gEscReason[512];
 
-// ��������� global ��ҹ�� (�͡�ѧ��ѹ) ���ͻ�ͧ�ѹ��ë��
+// เพิ่มตัวแปร global ด้านบน (นอกฟังก์ชัน) เพื่อป้องกันการซ้ำ
 new gLastInjectedDetectTime[MAX_PLAYERS];
 new gLastInjectedModuleHash[MAX_PLAYERS];
 
@@ -487,7 +487,7 @@ public OnPlayerDetectedInjectedModule(playerid, const modulePath[])
 {
     if(!IsPlayerConnected(playerid)) return 1;
 
-    // ��ͧ�ѹ��Ǩ�Ѻ������ǡѹ������� 10 �Թҷ�
+    // ป้องกันตรวจจับไฟล์เดียวกันซ้ำภายใน 10 วินาที
     new hash = 0;
     for(new i = 0, len = strlen(modulePath); i < len; i++)
     {
@@ -506,7 +506,7 @@ public OnPlayerDetectedInjectedModule(playerid, const modulePath[])
     new name[MAX_PLAYER_NAME], str[512];
     GetPlayerName(playerid, name, sizeof(name));
 
-    // �֧�������ҡ path
+    // ดึงชื่อไฟล์จาก path
     new fileName[128];
     new len = strlen(modulePath);
     new lastSlash = -1;
@@ -535,15 +535,15 @@ public OnPlayerDetectedInjectedModule(playerid, const modulePath[])
     new ip[16];
     GetPlayerIp(playerid, ip, sizeof(ip));
 
-    // �֧ʶҹСѹ�÷�������
+    // ดึงสถานะกันโปรที่เก็บไว้
     new acStatus[128];
     strcopy(acStatus, gPlayerACStatusString[playerid]);
 
-    // ��С�����
-    format(str, sizeof(str), "{B22222}[{DCDCDC}STP-Vanguard{DCDCDC}{B22222}]{FFFFFF} %s �١ẹ (HWID) �����: �մ���ҡ��¹͡�� (%s)", name, fileName);
+    // ประกาศในเกม
+    format(str, sizeof(str), "{B22222}[{DCDCDC}STP-Vanguard{DCDCDC}{B22222}]{FFFFFF} %s ถูกแบน (HWID) ข้อหา: ฉีดไฟล์จากภายนอกเกม (%s)", name, fileName);
     SendClientMessageToAll(-1, str);
 
-    // �ѹ�֡ HWID Ban
+    // บันทึก HWID Ban
     if (strlen(gPlayerHWID[playerid]) > 10)
     {
         new query[1024];
@@ -564,7 +564,7 @@ public OnPlayerDetectedInjectedModule(playerid, const modulePath[])
         mysql_tquery(g_SQL, query);
     }
 
-    // ẹ�ѭ��
+    // แบนบัญชี
     new reasonStr[256];
     format(reasonStr, sizeof(reasonStr), "Injected external module: %s", fileName);
 
@@ -577,9 +577,9 @@ public OnPlayerDetectedInjectedModule(playerid, const modulePath[])
         reasonStr, playerData[playerid][pID]);
     mysql_tquery(g_SQL, query2);
 
-    // === Log Discord ������ʴ� path ����ͧ��� ===
-    format(str, sizeof(str), "[STP-Vanguard] : ������ %s �١ẹ (HWID) ���˵�: �մ���ҡ��¹͡\n:file_folder: ������Ǩ��: **%s**\n:link: Path ���: `%s`\n[:gear:] : (ID: %d)\n[:globe_with_meridians:] : �ػ�ó�������� : %s\n[:shield:] : �ѹ�÷��ŧ : %s\n[:round_pushpin:] : �;��� : %s\n[:timer:] : �١ẹ�͹���� : %s",
-        name, fileName, modulePath, playerData[playerid][pID], IsPlayerAndroidv2(playerid) ? "���Ѿ����Ͷ��" : "����������", acStatus, ip, ReturnDateTime(0));
+    // === Log Discord พร้อมแสดง path เต็มของไฟล์ ===
+    format(str, sizeof(str), "[STP-Vanguard] : ผู้เล่น %s ถูกแบน (HWID) สาเหตุ: ฉีดไฟล์จากภายนอก\n:file_folder: ไฟล์ที่ตรวจพบ: **%s**\n:link: Path เต็ม: `%s`\n[:gear:] : (ID: %d)\n[:globe_with_meridians:] : อุปกรณ์ที่ใช้เล่น : %s\n[:shield:] : กันโปรที่ลง : %s\n[:round_pushpin:] : ไอพีเน็ต : %s\n[:timer:] : ถูกแบนตอนเวลา : %s",
+        name, fileName, modulePath, playerData[playerid][pID], IsPlayerAndroidv2(playerid) ? "โทรศัพท์มือถือ" : "คอมพิวเตอร์", acStatus, ip, ReturnDateTime(0));
 
     DCC_SendChannelMessage(DCC_FindChannelById("1455499435885990023"), str);
 
@@ -591,7 +591,7 @@ public OnPlayerDetectedInjectedModule(playerid, const modulePath[])
 
 
 // ============================================================================
-// ��С�ȵ���� (������ǹ global ���� enum �ͧ������)
+// ประกาศตัวแปร (ใส่ในส่วน global หรือ enum ของผู้เล่น)
 // ============================================================================
 
 #define MAX_INJECTED_FILES_PER_PLAYER   (32)
@@ -600,7 +600,7 @@ new gInjectedFiles[MAX_PLAYERS][MAX_INJECTED_FILES_PER_PLAYER][32];
 new gInjectedCount[MAX_PLAYERS];
 
 // ============================================================================
-// Whitelist DLL �������ͧ�� (�к� / ������١������)
+// Whitelist DLL ที่ไม่ต้องแจ้ง (ระบบ / โปรแกรมถูกกฎหมาย)
 // ============================================================================
 
 static const WHITELIST_INJECTED[][32] = {
@@ -633,7 +633,7 @@ static const WHITELIST_INJECTED[][32] = {
     "nvapi.dll",
     "EAX.DLL",                  // Fix GTA San Andreas
     "eax.dll",                  // Fix GTA San Andreas
-    "bink2w64.dll",             // Bink Video (��������)
+    "bink2w64.dll",             // Bink Video (เกมหลายเกม)
     "bink2w32.dll",
     "steam_api.dll",
     "steam_api64.dll",
@@ -658,7 +658,7 @@ static const WHITELIST_INJECTED[][32] = {
 };
 
 // ============================================================================
-// Reset ����ͼ������͡��
+// Reset เมื่อผู้เล่นออกเกม
 // ============================================================================
 hook OnPlayerDisconnect(playerid, reason)
 {
@@ -673,7 +673,7 @@ hook OnPlayerDisconnect(playerid, reason)
 }
 
 // ============================================================================
-// �ѧ��ѹ����
+// ฟังก์ชันช่วย
 // ============================================================================
 stock bool:HasAlreadyReportedInjectedFile(playerid, const fileName[])
 {
@@ -722,7 +722,7 @@ stock bool:IsWhitelistedInjectedFile(const fileName[])
     new temp[32];
     strcopy(temp, fileName, sizeof(temp));
 
-    // lowercase ������ºẺ���ʹ case
+    // lowercase เพื่อเทียบแบบไม่สน case
     for(new i = 0; temp[i] != EOS; i++)
     {
         if(temp[i] >= 'A' && temp[i] <= 'Z')
@@ -745,14 +745,14 @@ stock bool:IsWhitelistedInjectedFile(const fileName[])
 
 
 // ============================================================================
-// Callback ��ѡ
+// Callback หลัก
 // ============================================================================
 public OnPlayerDetectedInjectedModule(playerid, const modulePath[])
 {
     if(!IsPlayerConnected(playerid)) return 1;
 
     // ????????????????????????????????????????????????
-    // �֧੾�Ъ������ (������ path)
+    // ดึงเฉพาะชื่อไฟล์ (ไม่รวม path)
     // ????????????????????????????????????????????????
     new fileName[128];
     new len = strlen(modulePath);
@@ -780,16 +780,16 @@ public OnPlayerDetectedInjectedModule(playerid, const modulePath[])
         format(fileName, sizeof(fileName), "Unknown.dll");
 
     // ????????????????????????????????????????????????
-    // 1. ��ͧ whitelist ��͹ (�к� / Overwolf / Avast ���)
+    // 1. กรอง whitelist ก่อน (ระบบ / Overwolf / Avast ฯลฯ)
     // ????????????????????????????????????????????????
     if(IsWhitelistedInjectedFile(fileName))
     {
-        // printf("[Vanguard] Ignored whitelisted: %s (player %d)", fileName, playerid); // debug ��ҵ�ͧ���
+        // printf("[Vanguard] Ignored whitelisted: %s (player %d)", fileName, playerid); // debug ถ้าต้องการ
         return 1;
     }
 
     // ????????????????????????????????????????????????
-    // 2. ���������������� ? ����
+    // 2. ถ้าเคยแจ้งไฟล์นี้แล้ว ? ข้าม
     // ????????????????????????????????????????????????
     if(HasAlreadyReportedInjectedFile(playerid, fileName))
     {
@@ -797,7 +797,7 @@ public OnPlayerDetectedInjectedModule(playerid, const modulePath[])
     }
 
     // ????????????????????????????????????????????????
-    // �������ʧ��¨�ԧ � ? ������͹
+    // ไฟล์ที่น่าสงสัยจริง ๆ ? ส่งแจ้งเตือน
     // ????????????????????????????????????????????????
     new name[MAX_PLAYER_NAME];
     GetPlayerName(playerid, name, sizeof(name));
@@ -806,33 +806,33 @@ public OnPlayerDetectedInjectedModule(playerid, const modulePath[])
     GetPlayerIp(playerid, ip, sizeof(ip));
 
     new acStatus[128];
-    strcopy(acStatus, gPlayerACStatusString[playerid]); // ���������յ���ù����������
+    strcopy(acStatus, gPlayerACStatusString[playerid]); // สมมติว่ามีตัวแปรนี้อยู่แล้ว
 
     new str[700];
     
     format(str, sizeof(str),
-        "[STP-Vanguard] : ������ %s �١ʧ��� ���˵�: �մ���ҡ��¹͡%s\n" \
-        ":file_folder: ������Ǩ��: **%s**\n" \
-        ":link: Path ���: `%s`\n" \
+        "[STP-Vanguard] : ผู้เล่น %s ถูกสงสัย สาเหตุ: ฉีดไฟล์จากภายนอก%s\n" \
+        ":file_folder: ไฟล์ที่ตรวจพบ: **%s**\n" \
+        ":link: Path เต็ม: `%s`\n" \
         "[:gear:] ID: %d\n" \
-        "[:globe_with_meridians:] �ػ�ó��������: %s\n" \
-        "[:shield:] �ѹ�÷��ŧ: %s\n" \
-        "[:round_pushpin:] �;���: %s\n" \
-        "[:timer:] �١��Ǩ���͹����: %s",
+        "[:globe_with_meridians:] อุปกรณ์ที่ใช้เล่น: %s\n" \
+        "[:shield:] กันโปรที่ลง: %s\n" \
+        "[:round_pushpin:] ไอพีเน็ต: %s\n" \
+        "[:timer:] ถูกตรวจพบตอนเวลา: %s",
         name,
-        IsSuspectASI(fileName) ? " **(ʧ����繾����)**" : "",
+        IsSuspectASI(fileName) ? " **(สงสัยเป็นพิเศษ)**" : "",
         fileName,
         modulePath,
-        playerData[playerid][pID],                          // ���������� playerData ����
-        IsPlayerAndroidv2(playerid) ? "���Ѿ����Ͷ��" : "����������",
+        playerData[playerid][pID],                          // สมมติว่ามี playerData อยู่
+        IsPlayerAndroidv2(playerid) ? "โทรศัพท์มือถือ" : "คอมพิวเตอร์",
         acStatus,
         ip,
-        ReturnDateTime(0)                                   // ���������տѧ��ѹ���
+        ReturnDateTime(0)                                   // สมมติว่ามีฟังก์ชันนี้
     );
 
-    DCC_SendChannelMessage(DCC_FindChannelById("1464731488317866187"), str); // log ʧ���-�éմinjector
+    DCC_SendChannelMessage(DCC_FindChannelById("1464731488317866187"), str); // log สงสัย-โปรฉีดinjector
 
-    // �ѹ�֡�����������������
+    // บันทึกว่าส่งแจ้งไฟล์นี้ไปแล้ว
     AddReportedInjectedFile(playerid, fileName);
 
     return 1;
@@ -851,54 +851,54 @@ public OnPlayerGameFolderReported(playerid, const folderPath[], const summary[])
     new name[MAX_PLAYER_NAME];
     GetPlayerName(playerid, name, sizeof(name));
 
-    new DCC_Channel:channel = DCC_FindChannelById("1457034612915179776"); // ����¹�� channel �ͧ�س
+    new DCC_Channel:channel = DCC_FindChannelById("1457034612915179776"); // เปลี่ยนเป็น channel ของคุณ
 
-    // ��ǹ��� (����͹�Ҿ���)
+    // ส่วนหัว (เหมือนภาพเลย)
     new header[600];
     format(header, sizeof(header),
-        "**[Game Folder Report]** ������: **%s**\n**Path:** `%s`",
+        "**[Game Folder Report]** ผู้เล่น: **%s**\n**Path:** `%s`",
         name, folderPath);
 
     DCC_SendChannelMessage(channel, header);
 
-    // ��¡�����+������������ code block (�������͹�Ҿ)
+    // รายการไฟล์+โฟลเดอร์ทั้งหมดใน code block (สวยเหมือนภาพ)
     if (strlen(summary) > 0)
     {
         new msg[2048];
 
         format(msg, sizeof(msg),
-            "��¡�����/���������������:\n```\n%s\n```",
+            "รายการไฟล์/โฟลเดอร์ในโฟลเดอร์เกม:\n```\n%s\n```",
             summary);
 
-        // ��ͧ�ѹ��ͤ����Թ Discord limit
+        // ป้องกันข้อความเกิน Discord limit
         if (strlen(msg) > 1950)
         {
-            msg[1940] = '\0';                     // �Ѵ���ʹ�
-            strcat(msg, "\n... (�١�Ѵ���ͧ�ҡ����Թ)");
+            msg[1940] = '\0';                     // ตัดให้พอดี
+            strcat(msg, "\n... (ถูกตัดเนื่องจากยาวเกิน)");
         }
 
         DCC_SendChannelMessage(channel, msg);
     }
     else
     {
-        DCC_SendChannelMessage(channel, "*(���������������������������)*");
+        DCC_SendChannelMessage(channel, "*(ไม่มีไฟล์หรือโฟลเดอร์ในโฟลเดอร์เกม)*");
     }
 
     return 1;
 }*/
 
 
-// ��������� global ����͹��� (����ѧ�����)
+// เพิ่มตัวแปร global เหมือนเดิม (ถ้ายังไม่มี)
 new gLastNewInjectedDetectTime[MAX_PLAYERS];
 new gLastNewInjectedModuleHash[MAX_PLAYERS];
 
-// Callback ��������Ѻ runtime injected
+// Callback ใหม่สำหรับ runtime injected
 /*
 public OnPlayerDetectedNewInjectedModule(playerid, const modulePath[])
 {
     if(!IsPlayerConnected(playerid)) return 1;
 
-    // ��ͧ�ѹ flood ��Ǩ�Ѻ������ǡѹ���
+    // ป้องกัน flood ตรวจจับไฟล์เดียวกันซ้ำ
     new hash = 0; 
     for(new i = 0, len = strlen(modulePath); i < len; i++)
     {
@@ -919,7 +919,7 @@ public OnPlayerDetectedNewInjectedModule(playerid, const modulePath[])
     GetPlayerName(playerid, name, sizeof(name));
     GetPlayerIp(playerid, ip, sizeof(ip));
 
-    // �¡�������ҡ path
+    // แยกชื่อไฟล์จาก path
     new lastSlash = -1;
     for(new i = strlen(modulePath)-1; i >= 0; i--)
     {
@@ -938,20 +938,20 @@ public OnPlayerDetectedNewInjectedModule(playerid, const modulePath[])
     if(strlen(fileName) == 0)
         format(fileName, sizeof(fileName), "Unknown_Injected.dll");
 
-    // ���ҧ��ͤ�������͹
+    // สร้างข้อความแจ้งเตือน
     format(str, sizeof(str), 
-        "{B22222}[{DCDCDC}STP-Vanguard{DCDCDC}{B22222}]{FFFFFF} %s �١ẹ (HWID) - ��Ǩ����éմ����� runtime: %s",
+        "{B22222}[{DCDCDC}STP-Vanguard{DCDCDC}{B22222}]{FFFFFF} %s ถูกแบน (HWID) - ตรวจพบการฉีดโมดูล runtime: %s",
         name, fileName);
     SendClientMessageToAll(-1, str);
 
     new reason[128];
     format(reason, sizeof(reason), "Runtime Injected Module: %s (Path: %s)", fileName, modulePath);
 
-    // ʶҹСѹ��
+    // สถานะกันโปร
     new acStatus[128];
     strcopy(acStatus, gPlayerACStatusString[playerid], sizeof(acStatus));
 
-    // �ѹ�֡ẹ HWID (����͹�к����)
+    // บันทึกแบน HWID (เหมือนระบบเดิม)
     if(strlen(gPlayerHWID[playerid]) > 20)
     {
         new query[1024], escName[MAX_PLAYER_NAME*2], escReason[256];
@@ -965,7 +965,7 @@ public OnPlayerDetectedNewInjectedModule(playerid, const modulePath[])
         //    gPlayerHWID[playerid], escName, escReason, modulePath);
        // mysql_tquery(g_SQL, query);
 
-        // ẹ㹵��ҧ players (�����)
+        // แบนในตาราง players (ถ้ามี)
        // mysql_format(g_SQL, query, sizeof(query),
        //     "UPDATE `players` SET `playerBan` = 1, `playerBanReason` = '%e', `playerBanIP` = '%e', `playerBanDate` = NOW() \
         //    WHERE `playerName` = '%e'",
@@ -973,9 +973,9 @@ public OnPlayerDetectedNewInjectedModule(playerid, const modulePath[])
        // mysql_tquery(g_SQL, query);
     }
 
-    // Log Discord (��Ѻ channel ����ͧ�س)
+    // Log Discord (ปรับ channel ตามของคุณ)
     format(str, sizeof(str),
-        "[STP-Vanguard Runtime Inject] ������ %s �١ẹ\n���: **%s**\nPath: `%s`\nIP: %s\n�ѹ��: %s\n����: %s",
+        "[STP-Vanguard Runtime Inject] ผู้เล่น %s ถูกแบน\nไฟล์: **%s**\nPath: `%s`\nIP: %s\nกันโปร: %s\nเวลา: %s",
         name, fileName, modulePath, ip, acStatus, ReturnDateTime(0));
     DCC_SendChannelMessage(DCC_FindChannelById("1455499307384832074"), str);
 
@@ -984,19 +984,19 @@ public OnPlayerDetectedNewInjectedModule(playerid, const modulePath[])
     return 1;
 }*/
 
-// ��С�ȵ���� global ���� player variable ���ͻ�ͧ�ѹ����觫��
+// ประกาศตัวแปร global หรือ player variable เพื่อป้องกันการส่งซ้ำ
 new bool:g_HWIDBanShown[MAX_PLAYERS];
-/* �Դ��ҹ���Ǥ���
+/* ปิดใช้งานชั่วคราว
 forward CheckBannedHWID(playerid);
 public CheckBannedHWID(playerid)
 {
-    // ������ʴ����� ���������� (��ͧ�ѹ������¡���)
+    // ถ้าเคยแสดงแล้ว ให้ข้ามไปเลย (ป้องกันการเรียกซ้ำ)
     if(g_HWIDBanShown[playerid]) 
         return 1;
 
-    if(cache_num_rows() > 0)  // �� HWID ���١ẹ
+    if(cache_num_rows() > 0)  // พบ HWID ที่ถูกแบน
     {
-        // ��� flag ��������� �����������觫���ա
+        // ตั้ง flag ว่าส่งแล้ว เพื่อไม่ให้ส่งซ้ำอีก
         g_HWIDBanShown[playerid] = true;
 
         new reason[64], banned_by[64], player_name[MAX_PLAYER_NAME], ban_date[32], str[256];
@@ -1006,37 +1006,37 @@ public CheckBannedHWID(playerid)
         cache_get_value_name(0, "Name", player_name, sizeof(player_name));
         cache_get_value_name(0, "ban_date", ban_date, sizeof(ban_date));
 
-        // �ʴ���ͤ����᪷ (�����������)
-        format(str, sizeof(str), "{B22222}[{DCDCDC}STP-Vanguard{DCDCDC}{B22222}]{FFFFFF} ����ͧ���١ẹ (HWID)");
+        // แสดงข้อความในแชท (ส่งแค่ครั้งเดียว)
+        format(str, sizeof(str), "{B22222}[{DCDCDC}STP-Vanguard{DCDCDC}{B22222}]{FFFFFF} เครื่องนี้ถูกแบน (HWID)");
         SendClientMessage(playerid, -1, str);
 
-        format(str, sizeof(str), "{FFFFFF}ẹ��: {FF6347}%s {FFFFFF}| �˵ؼ�: {FF6347}%s {FFFFFF}| ���ͷ��١ẹ: {FF6347}%s", 
+        format(str, sizeof(str), "{FFFFFF}แบนโดย: {FF6347}%s {FFFFFF}| เหตุผล: {FF6347}%s {FFFFFF}| ชื่อที่ถูกแบน: {FF6347}%s", 
             banned_by, reason, player_name);
         SendClientMessage(playerid, -1, str);
 
-        // �������ͤ�������Ѻ Dialog
+        // เตรียมข้อความสำหรับ Dialog
         format(str, sizeof(str), 
-            "{FF6600}����ͧ�ͧ�س�١ẹ (HWID Ban)\n\n\
-            {FFFFFF}���ͺѭ�շ��١ẹ: {FF6347}%s\n\
-            {FFFFFF}ẹ��: {FF6347}%s\n\
-            {FFFFFF}���˵�: {FF6347}%s\n\n\
-            {FFFFFF}�ѹ���ẹ: {FF6347}%s",
+            "{FF6600}เครื่องของคุณถูกแบน (HWID Ban)\n\n\
+            {FFFFFF}ชื่อบัญชีที่ถูกแบน: {FF6347}%s\n\
+            {FFFFFF}แบนโดย: {FF6347}%s\n\
+            {FFFFFF}สาเหตุ: {FF6347}%s\n\n\
+            {FFFFFF}วันที่แบน: {FF6347}%s",
             player_name, banned_by, reason, ban_date);
 
-        // �ʴ� Dialog (���������)
-        Dialog_Show(playerid, DIALOG_BANCHECK, DIALOG_STYLE_MSGBOX, "\t{FFFFFF}Training Park", str, "�Դ", "");
+        // แสดง Dialog (แค่ครั้งเดียว)
+        Dialog_Show(playerid, DIALOG_BANCHECK, DIALOG_STYLE_MSGBOX, "\t{FFFFFF}Training Park", str, "ปิด", "");
 
         DelayedKick(playerid);
     }
-    // ������ẹ ������ͧ���������� (�����Ҩ reset flag ��ҵ�ͧ���)
+    // ถ้าไม่แบน ก็ไม่ต้องทำอะไรเพิ่ม (หรืออาจ reset flag ถ้าต้องการ)
     return 1;
 }*/
 
 
 
-// ��������� global ����ҹ���ҹ�� (�͡�ѧ��ѹ) ���ͻ�ͧ�ѹ��õ�Ǩ�Ѻ cheatid ���
+// เพิ่มตัวแปร global เหล่านี้ด้านบน (นอกฟังก์ชัน) เพื่อป้องกันการตรวจจับ cheatid ซ้ำ
 new gLastCheatDetectTime[MAX_PLAYERS];
-new gLastCheatID[MAX_PLAYERS] = {-1, ...}; // ��駤����������� -1 �ء��
+new gLastCheatID[MAX_PLAYERS] = {-1, ...}; // ตั้งค่าเริ่มต้นเป็น -1 ทุกคน
 
 stock ProcessCheatDetection(playerid, cheatid)
 {
@@ -1060,12 +1060,12 @@ stock ProcessCheatDetection(playerid, cheatid)
         case 4: reason = "anti_stun insert+X.cs (AntishotPoint.cs)";
         case 5: reason = "MoonLoader.asi";
         case 6: reason = "lua51.dll (MoonLoader)";
-        case 7: reason = "IREPLAYv3.2.asi (������)";
-        case 8: reason = "StealthRemastered.asi (������)";
+        case 7: reason = "IREPLAYv3.2.asi (โปรเมนู)";
+        case 8: reason = "StealthRemastered.asi (โปรเมนู)";
         case 9: reason = "clockweatherset.asi";
         case 10: reason = "HeadShotAimBot.cs (Aimbot Alt+1)";
-        case 11: reason = "iReplay v.5 by SampHack.asi (������)";
-        case 12: reason = "tr.cs (/tr ����駤������)";
+        case 11: reason = "iReplay v.5 by SampHack.asi (โปรเมนู)";
+        case 12: reason = "tr.cs (/tr โปรแกล้งคนตัวเด้ง)";
         case 13: reason = "Radarzoom.cs (hack minimap)";
         case 14: reason = "2in1.cs";
         case 15: reason = "asfist_1.cs";
@@ -1081,24 +1081,24 @@ stock ProcessCheatDetection(playerid, cheatid)
         case 25: reason = "slap O+U.cs";
         case 26: reason = "takecar.cs";
         case 27: reason = "tbkick.cs";
-        case 28: reason = "SbivNaR.cs (R �յ��)";
+        case 28: reason = "SbivNaR.cs (R รีตัว)";
         case 29: reason = "FastPedSyal.cs";
         case 30: reason = "SPREAD.cs";
         case 31: reason = "bladeSprint.asi";
-        case 32: reason = "arcane.asi (������)";
+        case 32: reason = "arcane.asi (โปรเมนู)";
         case 33: reason = "SKINCHANGER.cs (FakeSkin)";
         case 34: reason = "CrashRpt1402.dll";
         case 35: reason = "FakeMobile_For_GTA_VIET_NAM_GVN.sf (Wanabe Moblie)";
         case 36: reason = "UltraFuck 2.36.luac";
         case 37: reason = "sprintbind.cs";
         case 38: reason = "Infinite Run.cs";
-        case 39: reason = "ddmg.sf (����� x2)";
+        case 39: reason = "ddmg.sf (ดาเมจ x2)";
         case 40: reason = "CLEO.asi (Forbidden Mod)";
         case 41: reason = "SAMPFUNCS.asi (Forbidden Mod)";
         case 42: reason = "fast-enter-exit.cs";
-        case 43: reason = "2in1.asi (R �յ��)";
-        case 44: reason = "2in1_sbiv_na_x_1.cs (R �յ��)";
-        case 45: reason = "STP.VannguardNightmare.asi (�ѹ���� Bypass)";
+        case 43: reason = "2in1.asi (R รีตัว)";
+        case 44: reason = "2in1_sbiv_na_x_1.cs (R รีตัว)";
+        case 45: reason = "STP.VannguardNightmare.asi (ฝันร้าย Bypass)";
         case 46: reason = "ultrawh.asi";
         case 47: reason = "cacmods.asi";
         case 48: reason = "leet.dll";
@@ -1119,23 +1119,23 @@ stock ProcessCheatDetection(playerid, cheatid)
         case 63: reason = "LEGION v2.asi"; //ban
         case 64: reason = "MixSets.asi"; //kick
         case 65: reason = "Udrakoloader.asi"; //ban
-        case 101: reason = "Aimbot.exe"; // ��ǹ exe �ǡ�ӧҹ�͡����� Ẻ�觼šѺ�� 
-        case 102: reason = "Emperor Cheat AB.exe"; // ��ǹ exe �ǡ�ӧҹ�͡����� Ẻ�觼šѺ�� 
-        case 103: reason = "Emperor Cheat AB.exe";  // ��ǹ exe �ǡ�ӧҹ�͡����� Ẻ�觼šѺ�� 
-        case 104: reason = "Extreme Injector v3.exe";  // ��ǹ exe �ǡ�ӧҹ�͡����� Ẻ�觼šѺ�� 
-        case 105: reason = "loader.exe (dump.dll)";  // ��ǹ exe �ǡ�ӧҹ�͡����� Ẻ�觼šѺ�� 
-        case 106: reason = "�������˹���� (Infinite Run)";  // ��ǹ exe �ǡ�ӧҹ�͡����� Ẻ�觼šѺ�� 
-        case 107: reason = "Aimbot.exe"; // ��ǹ exe �ǡ�ӧҹ�͡����� Ẻ�觼šѺ�� 
-        case 108: reason = "Emperor Injector.exe"; // ��ǹ exe �ǡ�ӧҹ�͡����� Ẻ�觼šѺ�� 
-        case 109: reason = "Aim po pingu.exe"; // ��ǹ exe �ǡ�ӧҹ�͡����� Ẻ�觼šѺ�� 
-        case 110: reason = "NT037.exe"; // ��ǹ exe �ǡ�ӧҹ�͡����� Ẻ�觼šѺ�� 
-        case 111: reason = "AutoHotkey"; // ��ǹ exe �ǡ�ӧҹ�͡����� Ẻ�觼šѺ�� 
-        case 112: reason = "Megajump"; // �� menu
-        case 113: reason = "Saiyasart.exe (�ͧ�� Samp)"; // ��ǹ exe �ǡ�ӧҹ�͡����� Ẻ�觼šѺ�� 
-        case 114: reason = "AIMBOT by Borg_Grown.exe (�ͧ�� Samp)"; // ��ǹ exe �ǡ�ӧҹ�͡����� Ẻ�觼šѺ�� 
-        case 115: reason = "PyAIM.exe"; // ��ǹ exe �ǡ�ӧҹ�͡����� Ẻ�觼šѺ�� 
-        case 116: reason = "cstlnsoft.exe"; // ��ǹ exe �ǡ�ӧҹ�͡����� Ẻ�觼šѺ�� 
-        case 117: reason = "ProcessHacker"; // ��ǹ exe �ǡ�ӧҹ�͡����� Ẻ�觼šѺ�� 
+        case 101: reason = "Aimbot.exe"; // ส่วน exe พวกทำงานนอกไฟล์เกม แบบส่งผลกับเกม 
+        case 102: reason = "Emperor Cheat AB.exe"; // ส่วน exe พวกทำงานนอกไฟล์เกม แบบส่งผลกับเกม 
+        case 103: reason = "Emperor Cheat AB.exe";  // ส่วน exe พวกทำงานนอกไฟล์เกม แบบส่งผลกับเกม 
+        case 104: reason = "Extreme Injector v3.exe";  // ส่วน exe พวกทำงานนอกไฟล์เกม แบบส่งผลกับเกม 
+        case 105: reason = "loader.exe (dump.dll)";  // ส่วน exe พวกทำงานนอกไฟล์เกม แบบส่งผลกับเกม 
+        case 106: reason = "วิ่งไม่เหนื่อย (Infinite Run)";  // ส่วน exe พวกทำงานนอกไฟล์เกม แบบส่งผลกับเกม 
+        case 107: reason = "Aimbot.exe"; // ส่วน exe พวกทำงานนอกไฟล์เกม แบบส่งผลกับเกม 
+        case 108: reason = "Emperor Injector.exe"; // ส่วน exe พวกทำงานนอกไฟล์เกม แบบส่งผลกับเกม 
+        case 109: reason = "Aim po pingu.exe"; // ส่วน exe พวกทำงานนอกไฟล์เกม แบบส่งผลกับเกม 
+        case 110: reason = "NT037.exe"; // ส่วน exe พวกทำงานนอกไฟล์เกม แบบส่งผลกับเกม 
+        case 111: reason = "AutoHotkey"; // ส่วน exe พวกทำงานนอกไฟล์เกม แบบส่งผลกับเกม 
+        case 112: reason = "Megajump"; // โปร menu
+        case 113: reason = "Saiyasart.exe (ของมโน Samp)"; // ส่วน exe พวกทำงานนอกไฟล์เกม แบบส่งผลกับเกม 
+        case 114: reason = "AIMBOT by Borg_Grown.exe (ของมโน Samp)"; // ส่วน exe พวกทำงานนอกไฟล์เกม แบบส่งผลกับเกม 
+        case 115: reason = "PyAIM.exe"; // ส่วน exe พวกทำงานนอกไฟล์เกม แบบส่งผลกับเกม 
+        case 116: reason = "cstlnsoft.exe"; // ส่วน exe พวกทำงานนอกไฟล์เกม แบบส่งผลกับเกม 
+        case 117: reason = "ProcessHacker"; // ส่วน exe พวกทำงานนอกไฟล์เกม แบบส่งผลกับเกม 
         default: format(reason, sizeof(reason), "Illegal File ID: %d", cheatid);
     }
 
@@ -1157,7 +1157,7 @@ stock ProcessCheatDetection(playerid, cheatid)
     GetPlayerIp(playerid, ip, sizeof(ip));
     format(ban_date, sizeof(ban_date), "%s", ReturnDate());
 
-    // �����÷����ʶҹСѹ���������
+    // ใช้ตัวแปรที่เก็บสถานะกันโปรไว้แล้ว
     new acStatus[128];
     strcopy(acStatus, gPlayerACStatusString[playerid]);
 
@@ -1182,20 +1182,20 @@ stock ProcessCheatDetection(playerid, cheatid)
         playerData[playerid][pID]);
         mysql_tquery(g_SQL, query);
 
-        format(str, sizeof(str), "{B22222}[{DCDCDC}STP-Vanguard{DCDCDC}{B22222}]{FFFFFF} %s �١ẹ �����: %s", name, reason);
+        format(str, sizeof(str), "{B22222}[{DCDCDC}STP-Vanguard{DCDCDC}{B22222}]{FFFFFF} %s ถูกแบน ข้อหา: %s", name, reason);
         SendClientMessageToAll(-1, str);
 
-        format(str, sizeof(str), "[STP-Vanguard] : ������ %s �١ẹ ���˵�: %s\n[:gear:] : (ID: %d)\n[:globe_with_meridians:] : �ػ�ó�������� : %s\n[:shield:] : �ѹ�÷��ŧ : %s\n[:round_pushpin:] : �;��� : %s\n[:timer:] : �١ẹ�͹���� : %s",
-            name, reason, playerData[playerid][pID], IsPlayerAndroidv2(playerid) ? "���Ѿ����Ͷ��" : "����������", acStatus, ip, ReturnDateTime(0));
+        format(str, sizeof(str), "[STP-Vanguard] : ผู้เล่น %s ถูกแบน สาเหตุ: %s\n[:gear:] : (ID: %d)\n[:globe_with_meridians:] : อุปกรณ์ที่ใช้เล่น : %s\n[:shield:] : กันโปรที่ลง : %s\n[:round_pushpin:] : ไอพีเน็ต : %s\n[:timer:] : ถูกแบนตอนเวลา : %s",
+            name, reason, playerData[playerid][pID], IsPlayerAndroidv2(playerid) ? "โทรศัพท์มือถือ" : "คอมพิวเตอร์", acStatus, ip, ReturnDateTime(0));
         DCC_SendChannelMessage(DCC_FindChannelById("1455499307384832074"), str);
     }
     else
     {
-        format(str, sizeof(str), "{B22222}[{DCDCDC}STP-Vanguard{DCDCDC}{B22222}]{FFFFFF} %s �١���͡�ҡ��������� �����: %s", name, reason);
+        format(str, sizeof(str), "{B22222}[{DCDCDC}STP-Vanguard{DCDCDC}{B22222}]{FFFFFF} %s ถูกเตะออกจากเซิร์ฟเวอร์ ข้อหา: %s", name, reason);
         SendClientMessageToAll(-1, str);
 
-        format(str, sizeof(str), "[STP-Vanguard] : ������ %s �١���͡�ҡ��������� ���˵�: %s\n[:gear:] : (ID: %d)\n[:globe_with_meridians:] : �ػ�ó�������� : %s\n[:shield:] : �ѹ�÷��ŧ : %s\n[:round_pushpin:] : �;��� : %s\n[:timer:] : �١�е͹���� : %s",
-            name, reason, playerData[playerid][pID], IsPlayerAndroidv2(playerid) ? "���Ѿ����Ͷ��" : "����������", acStatus, ip, ReturnDateTime(0));
+        format(str, sizeof(str), "[STP-Vanguard] : ผู้เล่น %s ถูกเตะออกจากเซิร์ฟเวอร์ สาเหตุ: %s\n[:gear:] : (ID: %d)\n[:globe_with_meridians:] : อุปกรณ์ที่ใช้เล่น : %s\n[:shield:] : กันโปรที่ลง : %s\n[:round_pushpin:] : ไอพีเน็ต : %s\n[:timer:] : ถูกเตะตอนเวลา : %s",
+            name, reason, playerData[playerid][pID], IsPlayerAndroidv2(playerid) ? "โทรศัพท์มือถือ" : "คอมพิวเตอร์", acStatus, ip, ReturnDateTime(0));
         DCC_SendChannelMessage(DCC_FindChannelById("1455499187759218790"), str);
     }
 
@@ -1208,7 +1208,7 @@ stock ProcessCheatDetection(playerid, cheatid)
 
 hook OnPlayerConnect(playerid)
 {
-    g_HWIDBanShown[playerid] = false; // ���絷ء���駷���������� ẹ
+    g_HWIDBanShown[playerid] = false; // รีเซ็ตทุกครั้งที่เชื่อมต่อ แบน
     gPlayerAntiCheatStatus{playerid} = 0;
     gPlayerGotACMessage{playerid} = false;
     gPlayerHasSpawned{playerid} = false;
@@ -1216,39 +1216,39 @@ hook OnPlayerConnect(playerid)
     gPlayerHWID[playerid][0] = EOS;
     gPlayerHWIDV2[playerid][0] = EOS;
     gPlayerACType[playerid] = -1;
-    gPlayerHWIDSaved[playerid] = false; // ���絷ء���駷���������
-    gPlayerHWIDSavedV2[playerid] = false; // ���絷ء���駷���������
+    gPlayerHWIDSaved[playerid] = false; // รีเซ็ตทุกครั้งที่เข้าใหม่
+    gPlayerHWIDSavedV2[playerid] = false; // รีเซ็ตทุกครั้งที่เข้าใหม่
 
-    gPendingDynamicCheat[playerid] = -1;           // �Ӥѭ!
+    gPendingDynamicCheat[playerid] = -1;           // สำคัญ!
     gPendingDynamicFileName[playerid][0] = EOS;
     gPendingDynamicMD5[playerid][0] = EOS;
 
-    //g_GameFolderReported{playerid} = false; (��ԡ�� 2.3.2569)
+    //g_GameFolderReported{playerid} = false; (เลิกใช้ 2.3.2569)
     return 1;
 }
 
 /*
-hook OnPlayerSpawn(playerid) // 11/1/2569 ��͹���� hwid ��૿�͹ spawn
+hook OnPlayerSpawn(playerid) // 11/1/2569 ก่อนย้าย hwid มาเซฟตอน spawn
 {
     gPlayerHasSpawned{playerid} = true;
 
-    // ��������ʹ�Թ �����ҡѺ�����ҡ���� 19 ��������õ�Ǩ�ͺ�ѹ�÷�����
+    // เช็คเลเวลแอดมิน ถ้าเท่ากับหรือมากกว่า 19 ให้ข้ามการตรวจสอบกันโปรทั้งหมด
     if(playerData[playerid][pAdmin] < 19)
     {
         if(!IsPlayerAndroidv2(playerid))
         {
             if(gPlayerAntiCheatStatus{playerid} == 0)
             {
-                //SendClientMessage(playerid, 0xFF0000FF, "{B22222}[{DCDCDC}STP-Vanguard{DCDCDC}{B22222}]{FFFFFF} {CD5C5C}�س�����Դ����к���ͧ�ѹ���⡧{FFFFFF} ��سҴ�ǹ���Ŵ�ҡ {4169E1}Discord{FFFFFF} ��͹������!");
-                SendClientMessage(playerid, 0xFF0000FF, "{B22222}[{DCDCDC}STP-Vanguard{DCDCDC}{B22222}]{FFFFFF} {CD5C5C}�س�����Դ����к���ͧ�ѹ���⡧ (��ǡѹ��)");
-                SendClientMessage(playerid, 0xFF0000FF, "{FFFFFF}��ǹ���Ŵ�ҡ >{4169E1}Discord: discord.gg/fyyMhXJS9A{FFFFFF} ��͹������!");
+                //SendClientMessage(playerid, 0xFF0000FF, "{B22222}[{DCDCDC}STP-Vanguard{DCDCDC}{B22222}]{FFFFFF} {CD5C5C}คุณไม่ได้ติดตั้งระบบป้องกันการโกง{FFFFFF} กรุณาดาวน์โหลดจาก {4169E1}Discord{FFFFFF} ก่อนเข้าเล่น!");
+                SendClientMessage(playerid, 0xFF0000FF, "{B22222}[{DCDCDC}STP-Vanguard{DCDCDC}{B22222}]{FFFFFF} {CD5C5C}คุณไม่ได้ติดตั้งระบบป้องกันการโกง (ตัวกันโปร)");
+                SendClientMessage(playerid, 0xFF0000FF, "{FFFFFF}ดาวน์โหลดจาก >{4169E1}Discord: discord.gg/fyyMhXJS9A{FFFFFF} ก่อนเข้าเล่น!");
                 DelayedKick(playerid);
                 return 1;
             }
             else if(gPlayerAntiCheatStatus{playerid} == 1)
             {
-                SendClientMessage(playerid, 0xFF0000FF, "{B22222}[{DCDCDC}STP-Vanguard{DCDCDC}{B22222}]{FFFFFF} {CD5C5C}���ѹ�âͧ�س�������ѹ��� {FFFFFF}(�Ѿഷ����ش > 2.1.2569)");
-                SendClientMessage(playerid, 0xFF0000FF, "{FFFFFF}��سҴ�ǹ���Ŵ����ҡ {4169E1}Discord!");
+                SendClientMessage(playerid, 0xFF0000FF, "{B22222}[{DCDCDC}STP-Vanguard{DCDCDC}{B22222}]{FFFFFF} {CD5C5C}ไฟล์กันโปรของคุณเป็นเวอร์ชันเก่า {FFFFFF}(อัพเดทล่าสุด > 2.1.2569)");
+                SendClientMessage(playerid, 0xFF0000FF, "{FFFFFF}กรุณาดาวน์โหลดใหม่จาก {4169E1}Discord!");
                 DelayedKick(playerid);
                 return 1;
             }
@@ -1257,12 +1257,12 @@ hook OnPlayerSpawn(playerid) // 11/1/2569 ��͹���� hwid ��૿�͹ spawn
         {
             if(gPlayerAntiCheatStatus{playerid} == 0 && !gPlayerGotACMessage{playerid})
             {
-                //SendClientMessage(playerid, 0xFFFF00FF, "[STP-Vanguard] �س��蹼�ҹ��Ͷ�� �֧�����繵�ͧ�Դ����к���ͧ�ѹ");
+                //SendClientMessage(playerid, 0xFFFF00FF, "[STP-Vanguard] คุณเล่นผ่านมือถือ จึงไม่จำเป็นต้องติดตั้งระบบป้องกัน");
                 gPlayerGotACMessage{playerid} = true;
             }
         }
     }
-    // ������ʹ�Թ����� 19+ �����������͹䢴�ҹ����� ? ������õ�Ǩ�ѹ�÷�����
+    // ถ้าเป็นแอดมินเลเวล 19+ จะไม่เข้าเงื่อนไขด้านบนเลย ? ข้ามการตรวจกันโปรทั้งหมด
 
     if(gPendingCheatID[playerid] != 0)
     {
@@ -1274,15 +1274,15 @@ hook OnPlayerSpawn(playerid) // 11/1/2569 ��͹���� hwid ��૿�͹ spawn
 }*/
 
 
-// ���¡�úѹ�֡�ҷӵ͹ spawn + ��Ǩ�ͺ����ѧ����� save
+// ย้ายการบันทึกมาทำตอน spawn + ตรวจสอบว่ายังไม่เคย save
 hook OnPlayerSpawn(playerid)
 {
     gPlayerHasSpawned{playerid} = true;
 
     // =====================================
-    //       ��ǹ�ѹ�֡ HWID ŧ�ҹ������
+    //       ส่วนบันทึก HWID ลงฐานข้อมูล
     // =====================================
-    if(!gPlayerHWIDSaved[playerid] && strlen(gPlayerHWID[playerid]) > 10) // �դ�� HWID ��ԧ �
+    if(!gPlayerHWIDSaved[playerid] && strlen(gPlayerHWID[playerid]) > 10) // มีค่า HWID จริง ๆ
     {
         new query[256], playerName[MAX_PLAYER_NAME];
         GetPlayerName(playerid, playerName, sizeof(playerName));
@@ -1291,7 +1291,7 @@ hook OnPlayerSpawn(playerid)
             "UPDATE `players` SET `playerHWID` = '%e' WHERE `playerName` = '%e' LIMIT 1", 
             gPlayerHWID[playerid], playerName);
 
-        mysql_tquery(g_SQL, query, "", ""); // ����ͧ callback ����
+        mysql_tquery(g_SQL, query, "", ""); // ไม่ต้อง callback ก็ได้
 
         gPlayerHWIDSaved[playerid] = true;
         printf("[HWID] Saved HWID for %s (ID:%d) -> %s", playerName, playerid, gPlayerHWID[playerid]);
@@ -1299,9 +1299,9 @@ hook OnPlayerSpawn(playerid)
 
 
         // =====================================
-    //       ��ǹ�ѹ�֡ HWID ŧ�ҹ������ V2
+    //       ส่วนบันทึก HWID ลงฐานข้อมูล V2
     // =====================================
-    if(!gPlayerHWIDSavedV2[playerid] && strlen(gPlayerHWIDV2[playerid]) > 10) // �դ�� HWID ��ԧ �
+    if(!gPlayerHWIDSavedV2[playerid] && strlen(gPlayerHWIDV2[playerid]) > 10) // มีค่า HWID จริง ๆ
     {
         new query[256], playerName[MAX_PLAYER_NAME];
         GetPlayerName(playerid, playerName, sizeof(playerName));
@@ -1310,21 +1310,21 @@ hook OnPlayerSpawn(playerid)
             "UPDATE `players` SET `playerHWIDV2` = '%e' WHERE `playerName` = '%e' LIMIT 1", 
             gPlayerHWIDV2[playerid], playerName);
 
-        mysql_tquery(g_SQL, query, "", ""); // ����ͧ callback ����
+        mysql_tquery(g_SQL, query, "", ""); // ไม่ต้อง callback ก็ได้
 
         gPlayerHWIDSavedV2[playerid] = true;
         printf("[HWID] Saved HWIDV2 for %s (ID:%d) -> %s", playerName, playerid, gPlayerHWIDV2[playerid]);
     }
 
-        // === �����ż� Dynamic Cheat ����ҧ��� ===
-    if (gPendingDynamicCheat[playerid] != -1)  // ��ͧ��˹������������� -1 � OnPlayerConnect
+        // === ประมวลผล Dynamic Cheat ที่ค้างไว้ ===
+    if (gPendingDynamicCheat[playerid] != -1)  // ต้องกำหนดค่าเริ่มต้นเป็น -1 ใน OnPlayerConnect
     {
         ProcessDynamicCheatDetection(playerid, 0, gPendingDynamicFileName[playerid], gPendingDynamicMD5[playerid]);
-        gPendingDynamicCheat[playerid] = -1;   // ����
+        gPendingDynamicCheat[playerid] = -1;   // รีเซ็ต
     }
 
     // =====================================
-    //       �к��ѹ����� (�������¹)
+    //       ระบบกันโปรเดิม (ไม่เปลี่ยน)
     // =====================================
     if(playerData[playerid][pAdmin] < 19)
     {
@@ -1332,18 +1332,18 @@ hook OnPlayerSpawn(playerid)
         {
             if(gPlayerAntiCheatStatus{playerid} == 0)
             {
-                SendClientMessage(playerid, 0xFF0000FF, "{B22222}[{DCDCDC}STP-Vanguard{DCDCDC}{B22222}]{FFFFFF} {CD5C5C}�س�����Դ����к���ͧ�ѹ���⡧ (��ǡѹ��)");
-                SendClientMessage(playerid, 0xFF0000FF, "{FFFFFF}��ǹ���Ŵ�ҡ > {4169E1}Discord: discord.gg/fyyMhXJS9A{FFFFFF} ��͹������!");
+                SendClientMessage(playerid, 0xFF0000FF, "{B22222}[{DCDCDC}STP-Vanguard{DCDCDC}{B22222}]{FFFFFF} {CD5C5C}คุณไม่ได้ติดตั้งระบบป้องกันการโกง (ตัวกันโปร)");
+                SendClientMessage(playerid, 0xFF0000FF, "{FFFFFF}ดาวน์โหลดจาก > {4169E1}Discord: discord.gg/fyyMhXJS9A{FFFFFF} ก่อนเข้าเล่น!");
                 SendClientMessage(playerid, COLOR_WHITE, ""); 
-                SendClientMessage(playerid, COLOR_LIGHTBLUE, "{FF6600}[!]{FFFFFF} ����Դ���ŧ�ѹ�����Ǣ�������ŧ ����Ѿഷŧ�ѹ�õ������ش㹴�ʤ��");
-                SendClientMessage(playerid, COLOR_LIGHTBLUE, "{FF6600}[!]{FFFFFF} (�Ѿഷ����ش > 17.5.2569)");
+                SendClientMessage(playerid, COLOR_LIGHTBLUE, "{FF6600}[!]{FFFFFF} ถ้าเกิดว่าลงกันโปรแล้วขึ้นไม่ได้ลง ให้อัพเดทลงกันโปรตัวล่าสุดในดิสคอส");
+                SendClientMessage(playerid, COLOR_LIGHTBLUE, "{FF6600}[!]{FFFFFF} (อัพเดทล่าสุด > 17.5.2569)");
                 DelayedKick(playerid);  
                 return 1;
             }
             else if(gPlayerAntiCheatStatus{playerid} == 1)
             {
-                SendClientMessage(playerid, 0xFF0000FF, "{B22222}[{DCDCDC}STP-Vanguard{DCDCDC}{B22222}]{FFFFFF} {CD5C5C}���ѹ�âͧ�س�������ѹ��� {FFFFFF}(�Ѿഷ����ش > 17.5.2569)");
-                SendClientMessage(playerid, 0xFF0000FF, "{FFFFFF}��سҴ�ǹ���Ŵ����ҡ {4169E1}Discord!");
+                SendClientMessage(playerid, 0xFF0000FF, "{B22222}[{DCDCDC}STP-Vanguard{DCDCDC}{B22222}]{FFFFFF} {CD5C5C}ไฟล์กันโปรของคุณเป็นเวอร์ชันเก่า {FFFFFF}(อัพเดทล่าสุด > 17.5.2569)");
+                SendClientMessage(playerid, 0xFF0000FF, "{FFFFFF}กรุณาดาวน์โหลดใหม่จาก {4169E1}Discord!");
                 DelayedKick(playerid);
                 return 1;
             }
@@ -1363,14 +1363,14 @@ Logdiscord_AntiCheatStatus(playerid)
 {
     if (!IsPlayerConnected(playerid)) return 0;
 
-    // --- �����͹䢡�͹��: ��ͧ�� PC ��еԴ��駡ѹ�������ѹ����ش ---
-    if (IsPlayerAndroidv2(playerid)) // �������Ͷ�� ? ����� log
+    // --- เช็คเงื่อนไขก่อนส่ง: ต้องเป็น PC และติดตั้งกันโปรเวอร์ชันล่าสุด ---
+    if (IsPlayerAndroidv2(playerid)) // ถ้าเป็นมือถือ ? ไม่ส่ง log
         return 0;
 
-    if (gPlayerAntiCheatStatus{playerid} != 2) // ��������ŧ����ŧ�����ѹ��� ? ����� log
+    if (gPlayerAntiCheatStatus{playerid} != 2) // ถ้าไม่ได้ลงหรือลงเวอร์ชันเก่า ? ไม่ส่ง log
         return 0;
 
-    // --- ��Ҽ�ҹ���͹䢷����� �������ҧ����� Embed ---
+    // --- ถ้าผ่านเงื่อนไขทั้งหมด ค่อยสร้างและส่ง Embed ---
     new DCC_Embed:embed = DCC_CreateEmbed("Admin Login Log", "", "", "", 0x00FF00);
 
     new str[256], playerIP[16], query[128], playerName[MAX_PLAYER_NAME], skinURL[128];
@@ -1379,17 +1379,17 @@ Logdiscord_AntiCheatStatus(playerid)
     new acStatus[128];
     strcopy(acStatus, gPlayerACStatusString[playerid]);
 
-    // --- �֧�����ż����� ---
+    // --- ดึงข้อมูลผู้เล่น ---
     GetPlayerName(playerid, playerName, sizeof(playerName));
     GetPlayerIp(playerid, playerIP, sizeof(playerIP));
     GetPlayerCountry(playerid, country, sizeof(country));
     GetPlayerISP(playerid, isp, sizeof(isp));
     GetPlayerCity(playerid, city, sizeof(city));
 
-    // --- �֧������ Whitelist �ҡ SQL ---
+    // --- ดึงข้อมูล Whitelist จาก SQL ---
     cache_get_value_name_int(0, "playerWhitelist", playerWhitelist);
 
-    // --- ʡԹ ---
+    // --- สกิน ---
     skinID = GetPlayerSkin(playerid);
     if (skinID >= 0 && skinID <= 311)
         format(skinURL, sizeof(skinURL), "http://trainingpark.ddns.net/assets/skins/skin-%d_stp.png", skinID);
@@ -1398,49 +1398,49 @@ Logdiscord_AntiCheatStatus(playerid)
 
     DCC_SetEmbedThumbnail(embed, skinURL);
 
-    // --- ������ Embed ---
-    format(str, sizeof(str), "[Log-Login (STP-Vanguard) :green_circle: ] �����ż�����: %s", playerName);
+    // --- ตั้งหัว Embed ---
+    format(str, sizeof(str), "[Log-Login (STP-Vanguard) :green_circle: ] ข้อมูลผู้เล่น: %s", playerName);
     DCC_SetEmbedTitle(embed, str);
 
-    // --- ��Ŵ������ ---
+    // --- ฟิลด์ข้อมูล ---
     new playerField[128], whitelistStatus[32];
-    format(whitelistStatus, sizeof(whitelistStatus), "(%s Whitelist)", playerWhitelist == 1 ? "��" : "�����");
-    format(playerField, sizeof(playerField), ":bust_in_silhouette: ���ͼ����� %s %s", playerName, whitelistStatus);
+    format(whitelistStatus, sizeof(whitelistStatus), "(%s Whitelist)", playerWhitelist == 1 ? "มี" : "ไม่มี");
+    format(playerField, sizeof(playerField), ":bust_in_silhouette: ชื่อผู้เล่น %s %s", playerName, whitelistStatus);
     DCC_AddEmbedField(embed, playerField, "");
 
-    DCC_AddEmbedField(embed, ":jigsaw: �ػ�ó�", "����������"); // ��͹����� PC ������������
+    DCC_AddEmbedField(embed, ":jigsaw: อุปกรณ์", "คอมพิวเตอร์"); // แน่นอนว่าเป็น PC เพราะเช็คมาแล้ว
 
-    DCC_AddEmbedField(embed, ":flag_white: �����", country);
+    DCC_AddEmbedField(embed, ":flag_white: ประเทศ", country);
 
-    DCC_AddEmbedField(embed, ":cityscape: ���ͧ", city);
+    DCC_AddEmbedField(embed, ":cityscape: เมือง", city);
 
-    DCC_AddEmbedField(embed, ":wireless: �������ԡ���Թ������", isp);
+    DCC_AddEmbedField(embed, ":wireless: ผู้ให้บริการอินเทอร์เน็ต", isp);
 
     DCC_AddEmbedField(embed, "IP", playerIP);
 
-    DCC_AddEmbedField(embed, "�ѹ�÷��ŧ", acStatus);
+    DCC_AddEmbedField(embed, "กันโปรที่ลง", acStatus);
 
-    DCC_AddEmbedField(embed, ":timer: �������к������", ReturnDateTime(0));
+    DCC_AddEmbedField(embed, ":timer: เข้าสู่ระบบเมื่อ", ReturnDateTime(0));
 
-    // --- ��� Discord ---
+    // --- ส่งไป Discord ---
     DCC_SendChannelEmbedMessage(DCC_FindChannelById("1455555958356054107"), embed);
 
     return 1;
 }
 
-// --- [ ������ʹ�Թ��м����蹷���� ] ---
+// --- [ คำสั่งแอดมินและผู้เล่นทั่วไป ] ---
 CMD:checkhwid(playerid, params[])
 {
     if (playerData[playerid][pAdmin] < 20)
         return 1;
 
     new targetid;
-    if(sscanf(params, "u", targetid)) return SendClientMessage(playerid, -1, "�����ҹ: /checkhwid [ID]");
+    if(sscanf(params, "u", targetid)) return SendClientMessage(playerid, -1, "การใช้งาน: /checkhwid [ID]");
 
-    if(!IsPlayerConnected(targetid)) return SendClientMessage(playerid, -1, "��辺������");
+    if(!IsPlayerConnected(targetid)) return SendClientMessage(playerid, -1, "ไม่พบผู้เล่น");
 
     new str[128];
-    format(str, sizeof(str), "* HWID �ͧ %d (%s) ���: %s", targetid, GetPlayerNameEx(targetid), gPlayerHWID[targetid]);
+    format(str, sizeof(str), "* HWID ของ %d (%s) คือ: %s", targetid, GetPlayerNameEx(targetid), gPlayerHWID[targetid]);
     SendClientMessage(playerid, -1, str);
     return 1;
 }
@@ -1451,26 +1451,26 @@ CMD:rg(playerid, params[])
 	return 1;
 
     new targetid;
-    if(sscanf(params, "u", targetid)) return SendClientMessage(playerid, -1, "{FF6600}[CMD]:{04c0f0} /rg ���� /ac (id)");
+    if(sscanf(params, "u", targetid)) return SendClientMessage(playerid, -1, "{FF6600}[CMD]:{04c0f0} /rg หรือ /ac (id)");
 
-    if(!IsPlayerConnected(targetid)) return SendClientMessage(playerid, -1, "{FF6600}[!]{FFFFFF} �����蹹������͹�Ź�");
+    if(!IsPlayerConnected(targetid)) return SendClientMessage(playerid, -1, "{FF6600}[!]{FFFFFF} ผู้เล่นนั้นไม่ออนไลน์");
 
     new targetName[MAX_PLAYER_NAME], str[256];
     GetPlayerName(targetid, targetName, sizeof(targetName));
 
-    // �礡�͹�����Ҷ������Ͷ�� ����ʴ���ͤ��������
+    // เช็คก่อนเลยว่าถ้าเป็นมือถือ ให้แสดงข้อความพิเศษ
     if(IsPlayerAndroidv2(targetid))
     {
-        format(str, sizeof(str), "{f9f900}%s | {00FF00}��蹼�ҹ��Ͷ�� - ����ͧ�Դ��駡ѹ��", targetName);
+        format(str, sizeof(str), "{f9f900}%s | {00FF00}เล่นผ่านมือถือ - ไม่ต้องติดตั้งกันโปร", targetName);
         SendClientMessage(playerid, -1, str);
         return 1;
     }
 
     switch(gPlayerAntiCheatStatus{targetid})
     {
-        case 0, 1: // �����������ŧ��� ���ŧ�����������ѹ���
+        case 0, 1: // รวมทั้งไม่ได้ลงเลย และลงแล้วแต่เวอร์ชันเก่า
         {
-            format(str, sizeof(str), "{f9f900}%s | {FF0000}�����Դ��駵�ǡѹ��", targetName);
+            format(str, sizeof(str), "{f9f900}%s | {FF0000}ไม่ได้ติดตั้งตัวกันโปร", targetName);
         }
         case 2:
         {
@@ -1480,12 +1480,12 @@ CMD:rg(playerid, params[])
             }
             else // == 0
             {
-                format(str, sizeof(str), "{f9f900}%s | {00FF00}STP-Vanguard (����)", targetName);
+                format(str, sizeof(str), "{f9f900}%s | {00FF00}STP-Vanguard (ปกติ)", targetName);
             }
         }
         default:
         {
-            format(str, sizeof(str), "{f9f900}%s | {00FF00}ʶҹСѹ������Һ (�Ҩ�Դ��ͼԴ��Ҵ)", targetName);
+            format(str, sizeof(str), "{f9f900}%s | {00FF00}สถานะกันโปรไม่ทราบ (อาจเกิดข้อผิดพลาด)", targetName);
         }
     }
 

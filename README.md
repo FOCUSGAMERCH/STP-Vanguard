@@ -124,7 +124,7 @@ The client target server addresses are configured in `client/main.cpp`. Update t
 
 ### Build from source
 
-Open `STP_Vanguard.sln` in Visual Studio 2022 with C++ v143 and Windows SDK 10.0.19041.0. Select **Release / Win32 (x86)** and build the solution. The two client policies are selected by `STP_CLIENT_TYPE` in the respective project file. The server plugin is a Windows x86 DLL. The supplied Pawn examples retain legacy Thai Windows code-page text; avoid changing their encoding when you need the original in-game Thai messages.
+Open `STP_Vanguard.sln` in Visual Studio 2022 with C++ v143 and Windows SDK 10.0.19041.0. Select **Release / Win32 (x86)** and build the solution. The two client policies are selected by `STP_CLIENT_TYPE` in the respective project file. The server plugin is a Windows x86 DLL. The Thai Pawn examples are stored as UTF-8 in GitHub for readable code review. `.gitattributes` converts them back to Windows-874 when you clone the repository with Git, preserving the encoding expected by legacy SA-MP Pawn compilers. If you download a source archive directly, convert these three Pawn files to Windows-874 before compiling.
 
 The repository includes prebuilt ASI and DLL files for reference. Build from source if you change the server target, code, or project settings. Linux `.so` is not built or supported by this release.
 
@@ -279,7 +279,7 @@ Scanner เปรียบเทียบ hash/signature ของไฟล์ �
 
 ### Build จาก Source
 
-เปิด `STP_Vanguard.sln` ด้วย Visual Studio 2022, C++ v143 และ Windows SDK 10.0.19041.0 เลือก **Release / Win32 (x86)** แล้ว Build Solution นโยบาย Client สองแบบกำหนดด้วย `STP_CLIENT_TYPE` ใน project file ของแต่ละรุ่น Server Plugin เป็น DLL สำหรับ Windows x86 สคริปต์ Pawn ตัวอย่างเก็บข้อความไทยด้วย encoding แบบ Windows รุ่นเดิม หากต้องการข้อความในเกมเหมือนเดิม อย่าแปลง encoding ของไฟล์โดยไม่ตรวจผล
+เปิด `STP_Vanguard.sln` ด้วย Visual Studio 2022, C++ v143 และ Windows SDK 10.0.19041.0 เลือก **Release / Win32 (x86)** แล้ว Build Solution นโยบาย Client สองแบบกำหนดด้วย `STP_CLIENT_TYPE` ใน project file ของแต่ละรุ่น Server Plugin เป็น DLL สำหรับ Windows x86 ไฟล์ Pawn ภาษาไทยจัดเก็บบน GitHub เป็น UTF-8 เพื่อให้อ่านโค้ดได้ โดย `.gitattributes` จะแปลงกลับเป็น Windows-874 ใน working tree เมื่อ clone ด้วย Git เพื่อคงรูปแบบที่ Pawn compiler รุ่นเก่าของ SA-MP คาดไว้ หากดาวน์โหลด source archive โดยตรง ให้แปลงไฟล์ Pawn ทั้งสามไฟล์กลับเป็น Windows-874 ก่อน compile
 
 ในรีโปมีไฟล์ ASI และ DLL ที่ build ไว้เพื่ออ้างอิง หากเปลี่ยน IP เซิร์ฟเวอร์ แก้โค้ด หรือปรับ project settings ให้ build ใหม่ รุ่นนี้ยังไม่ได้ build หรือรองรับ Linux `.so`
 
@@ -327,6 +327,7 @@ Pawn script ต้องใช้ handle ฐานข้อมูล `g_SQL` แ
 Source เผยแพร่ภายใต้ **STP-Vanguard Non-Commercial License** ในไฟล์ [`LICENSE`](LICENSE) อนุญาตให้ใช้ ศึกษา แก้ไข และแจกจ่ายต่อได้เพื่อวัตถุประสงค์ที่ไม่ใช่เชิงพาณิชย์ รวมถึงใช้ในเซิร์ฟเวอร์ของตนเองที่ไม่แสวงหารายได้ ห้ามขายโปรเจกต์หรือใช้เชิงพาณิชย์ ส่วนประกอบจากบุคคลที่สามยังคงใช้ notice และเงื่อนไขไลเซนส์เดิม ดู [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)
 
 นี่คือ Source Release เวอร์ชันสุดท้าย 9.11.0 เผยแพร่ตามสภาพปัจจุบัน โดยไม่มีสัญญาว่าจะพัฒนาหรือให้การสนับสนุนต่อ
+
 
 
 

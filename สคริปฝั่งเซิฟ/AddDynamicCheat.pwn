@@ -1,5 +1,5 @@
 // ============================================================================
-// [√–∫∫ Dynamic Cheat Scan ºË“π SQL - ‡«Õ√Ï™—π·°È‰¢„À¡Ë∑—ÈßÀ¡¥]
+// [‡∏£‡∏∞‡∏ö‡∏ö Dynamic Cheat Scan ‡∏ú‡πà‡∏≤‡∏ô SQL - ‡πÄ‡∏ß‡∏≠‡∏£‡πå‡∏ä‡∏±‡∏ô‡πÅ‡∏Å‡πâ‡πÑ‡∏Ç‡πÉ‡∏´‡∏°‡πà‡∏ó‡∏±‡πâ‡∏á‡∏´‡∏°‡∏î]
 // ============================================================================
 
 #define MAX_SQL_CHEATS 500
@@ -19,14 +19,14 @@ enum E_SQL_CHEAT {
 new SQLCheats[MAX_SQL_CHEATS][E_SQL_CHEAT];
 new TotalSQLCheats = 0;
 
-// µ—«·ª√ ”À√—∫·Õ¥¡‘π
+// ‡∏ï‡∏±‡∏ß‡πÅ‡∏õ‡∏£‡∏™‡∏≥‡∏´‡∏£‡∏±‡∏ö‡πÅ‡∏≠‡∏î‡∏°‡∏¥‡∏ô
 new AdminPage[MAX_PLAYERS];
 new AdminEditIndex[MAX_PLAYERS];
 new AdminTempHash[MAX_PLAYERS][33];
 new AdminTempName[MAX_PLAYERS][64];
 
 // ===================================================================
-// Load Dynamic Cheats ®“° SQL
+// Load Dynamic Cheats ‡∏à‡∏≤‡∏Å SQL
 // ===================================================================
 forward LoadDynamicCheats(); 
 public LoadDynamicCheats()
@@ -50,11 +50,11 @@ public OnDynamicCheatsLoaded()
             cache_get_value_name(i, "cheat_name", SQLCheats[i][CheatName], 64);
             cache_get_value_name_int(i, "action", SQLCheats[i][CheatAction]);
             
-            // ¢ÈÕ¡Ÿ≈ºŸÈ‡æ‘Ë¡
+            // ‡∏Ç‡πâ‡∏≠‡∏°‡∏π‡∏•‡∏ú‡∏π‡πâ‡πÄ‡∏û‡∏¥‡πà‡∏°
             cache_get_value_name(i, "added_by", SQLCheats[i][CheatAddedBy], 24);
             cache_get_value_name(i, "added_date", SQLCheats[i][CheatAddedDate], 32);
             
-            // ¢ÈÕ¡Ÿ≈ºŸÈ·°È‰¢≈Ë“ ÿ¥ (‡™Á§ªÈÕß°—π§Ë“ NULL)
+            // ‡∏Ç‡πâ‡∏≠‡∏°‡∏π‡∏•‡∏ú‡∏π‡πâ‡πÅ‡∏Å‡πâ‡πÑ‡∏Ç‡∏•‡πà‡∏≤‡∏™‡∏∏‡∏î (‡πÄ‡∏ä‡πá‡∏Ñ‡∏õ‡πâ‡∏≠‡∏á‡∏Å‡∏±‡∏ô‡∏Ñ‡πà‡∏≤ NULL)
             new tempStr[32];
             cache_get_value_name(i, "updated_by", tempStr, 24);
             if(strlen(tempStr) < 1 || !strcmp(tempStr, "NULL", true)) strcopy(SQLCheats[i][CheatUpdatedBy], "-");
@@ -72,7 +72,7 @@ public OnDynamicCheatsLoaded()
 }
 
 // ===================================================================
-// µ√«®´È” MD5 (∑—Èß Script + SQL)
+// ‡∏ï‡∏£‡∏ß‡∏à‡∏ã‡πâ‡∏≥ MD5 (‡∏ó‡∏±‡πâ‡∏á Script + SQL)
 // ===================================================================
 stock bool:IsHashExists(const md5hash[])
 {
@@ -161,12 +161,12 @@ stock ProcessDynamicCheatDetection(playerid, fileType, const filename[], const m
 
         if (cheatAction == 2)
         {
-            format(str, sizeof(str), "{B22222}[{DCDCDC}STP-Vanguard{DCDCDC}{B22222}]{FFFFFF} %s ∂Ÿ°·∫π ¢ÈÕÀ“: µ√«®æ∫‰ø≈ÏÕ—πµ√“¬ %s (%s)", 
+            format(str, sizeof(str), "{B22222}[{DCDCDC}STP-Vanguard{DCDCDC}{B22222}]{FFFFFF} %s ‡∏ñ‡∏π‡∏Å‡πÅ‡∏ö‡∏ô ‡∏Ç‡πâ‡∏≠‡∏´‡∏≤: ‡∏ï‡∏£‡∏ß‡∏à‡∏û‡∏ö‡πÑ‡∏ü‡∏•‡πå‡∏≠‡∏±‡∏ô‡∏ï‡∏£‡∏≤‡∏¢ %s (%s)", 
                 GetPlayerNameEx(playerid), cheatName, filename);
             SendClientMessageToAll(-1, str);
 
             new ip[16]; GetPlayerIp(playerid, ip, sizeof(ip));
-            format(str, sizeof(str), "[STP-Vanguard (Dynamic)] : ºŸÈ‡≈Ëπ %s ∂Ÿ°·∫π  “‡Àµÿ: %s\n:file_folder: ‰ø≈Ï∑’Ëµ√«®æ∫: %s\n[:gear:] : (ID: %d)\n[:round_pushpin:] : ‰Õæ’‡πÁµ : %s\n[:timer:] : ∂Ÿ°·∫πµÕπ‡«≈“ : %s",
+            format(str, sizeof(str), "[STP-Vanguard (Dynamic)] : ‡∏ú‡∏π‡πâ‡πÄ‡∏•‡πà‡∏ô %s ‡∏ñ‡∏π‡∏Å‡πÅ‡∏ö‡∏ô ‡∏™‡∏≤‡πÄ‡∏´‡∏ï‡∏∏: %s\n:file_folder: ‡πÑ‡∏ü‡∏•‡πå‡∏ó‡∏µ‡πà‡∏ï‡∏£‡∏ß‡∏à‡∏û‡∏ö: %s\n[:gear:] : (ID: %d)\n[:round_pushpin:] : ‡πÑ‡∏≠‡∏û‡∏µ‡πÄ‡∏ô‡πá‡∏ï : %s\n[:timer:] : ‡∏ñ‡∏π‡∏Å‡πÅ‡∏ö‡∏ô‡∏ï‡∏≠‡∏ô‡πÄ‡∏ß‡∏•‡∏≤ : %s",
                 GetPlayerNameEx(playerid), cheatName, filename, playerData[playerid][pID], ip, ReturnDateTime(0));
             DCC_SendChannelMessage(DCC_FindChannelById("1455499307384832074"), str);
 
@@ -189,12 +189,12 @@ stock ProcessDynamicCheatDetection(playerid, fileType, const filename[], const m
         }
         else if (cheatAction == 1)
         {
-            format(str, sizeof(str), "{B22222}[{DCDCDC}STP-Vanguard{DCDCDC}{B22222}]{FFFFFF} %s ∂Ÿ°‡µ–ÕÕ°®“°‡´‘√Ïø‡«Õ√Ï ¢ÈÕÀ“: %s", 
+            format(str, sizeof(str), "{B22222}[{DCDCDC}STP-Vanguard{DCDCDC}{B22222}]{FFFFFF} %s ‡∏ñ‡∏π‡∏Å‡πÄ‡∏ï‡∏∞‡∏≠‡∏≠‡∏Å‡∏à‡∏≤‡∏Å‡πÄ‡∏ã‡∏¥‡∏£‡πå‡∏ü‡πÄ‡∏ß‡∏≠‡∏£‡πå ‡∏Ç‡πâ‡∏≠‡∏´‡∏≤: %s", 
                 GetPlayerNameEx(playerid), cheatName);
             SendClientMessageToAll(-1, str);
 
             new ip[16]; GetPlayerIp(playerid, ip, sizeof(ip));
-            format(str, sizeof(str), "[STP-Vanguard (Dynamic)] : ºŸÈ‡≈Ëπ %s ∂Ÿ°‡µ–  “‡Àµÿ: %s\n:file_folder: ‰ø≈Ï∑’Ëµ√«®æ∫: %s\n[:gear:] : (ID: %d)",
+            format(str, sizeof(str), "[STP-Vanguard (Dynamic)] : ‡∏ú‡∏π‡πâ‡πÄ‡∏•‡πà‡∏ô %s ‡∏ñ‡∏π‡∏Å‡πÄ‡∏ï‡∏∞ ‡∏™‡∏≤‡πÄ‡∏´‡∏ï‡∏∏: %s\n:file_folder: ‡πÑ‡∏ü‡∏•‡πå‡∏ó‡∏µ‡πà‡∏ï‡∏£‡∏ß‡∏à‡∏û‡∏ö: %s\n[:gear:] : (ID: %d)",
                 GetPlayerNameEx(playerid), cheatName, filename, playerData[playerid][pID]);
             DCC_SendChannelMessage(DCC_FindChannelById("1455499187759218790"), str);
 
@@ -210,7 +210,7 @@ stock ProcessDynamicCheatDetection(playerid, fileType, const filename[], const m
 CMD:acmanage(playerid, params[])
 {
     if (playerData[playerid][pAdmin] < 20) 
-        return SendClientMessage(playerid, -1, "‰¡Ë¡’ ‘∑∏‘Ï„™Èß“π§” —Ëßπ’È");
+        return SendClientMessage(playerid, -1, "‡πÑ‡∏°‡πà‡∏°‡∏µ‡∏™‡∏¥‡∏ó‡∏ò‡∏¥‡πå‡πÉ‡∏ä‡πâ‡∏á‡∏≤‡∏ô‡∏Ñ‡∏≥‡∏™‡∏±‡πà‡∏á‡∏ô‡∏µ‡πâ");
 
     ShowDynamicAdminMenu(playerid);
     return 1;
@@ -219,12 +219,12 @@ CMD:acmanage(playerid, params[])
 stock ShowDynamicAdminMenu(playerid)
 {
     Dialog_Show(playerid, DIALOG_DYNAMIC_MENU, DIALOG_STYLE_LIST, 
-        "STP-Vanguard | ®—¥°“√‰ø≈Ï‚ª√µÈÕßÀÈ“¡",
-        "1. ¥Ÿ‰ø≈Ï‚ª√Ω—ß„π §√‘ªµÏ (Hardcoded - ·°È‰¢‰¡Ë‰¥È)\n\
-2. ¥Ÿ/®—¥°“√ ‰ø≈Ï‚ª√ Dynamic (SQL)\n\
-3. ‡æ‘Ë¡‰ø≈Ï‚ª√„À¡Ë (Add Hash)\n\
-4. √’‚À≈¥¢ÈÕ¡Ÿ≈„À¡Ë®“°∞“π¢ÈÕ¡Ÿ≈", 
-        "‡≈◊Õ°", "¬°‡≈‘°");
+        "STP-Vanguard | ‡∏à‡∏±‡∏î‡∏Å‡∏≤‡∏£‡πÑ‡∏ü‡∏•‡πå‡πÇ‡∏õ‡∏£‡∏ï‡πâ‡∏≠‡∏á‡∏´‡πâ‡∏≤‡∏°",
+        "1. ‡∏î‡∏π‡πÑ‡∏ü‡∏•‡πå‡πÇ‡∏õ‡∏£‡∏ù‡∏±‡∏á‡πÉ‡∏ô‡∏™‡∏Ñ‡∏£‡∏¥‡∏õ‡∏ï‡πå (Hardcoded - ‡πÅ‡∏Å‡πâ‡πÑ‡∏Ç‡πÑ‡∏°‡πà‡πÑ‡∏î‡πâ)\n\
+2. ‡∏î‡∏π/‡∏à‡∏±‡∏î‡∏Å‡∏≤‡∏£ ‡πÑ‡∏ü‡∏•‡πå‡πÇ‡∏õ‡∏£ Dynamic (SQL)\n\
+3. ‡πÄ‡∏û‡∏¥‡πà‡∏°‡πÑ‡∏ü‡∏•‡πå‡πÇ‡∏õ‡∏£‡πÉ‡∏´‡∏°‡πà (Add Hash)\n\
+4. ‡∏£‡∏µ‡πÇ‡∏´‡∏•‡∏î‡∏Ç‡πâ‡∏≠‡∏°‡∏π‡∏•‡πÉ‡∏´‡∏°‡πà‡∏à‡∏≤‡∏Å‡∏ê‡∏≤‡∏ô‡∏Ç‡πâ‡∏≠‡∏°‡∏π‡∏•", 
+        "‡πÄ‡∏•‡∏∑‡∏≠‡∏Å", "‡∏¢‡∏Å‡πÄ‡∏•‡∏¥‡∏Å");
 }
 
 Dialog:DIALOG_DYNAMIC_MENU(playerid, response, listitem, inputtext[])
@@ -241,12 +241,12 @@ Dialog:DIALOG_DYNAMIC_MENU(playerid, response, listitem, inputtext[])
         }
         case 2: 
             Dialog_Show(playerid, DIALOG_DYNAMIC_ADD_HASH, DIALOG_STYLE_INPUT, 
-                "‡æ‘Ë¡‰ø≈Ï‚ª√ | ¢—ÈπµÕπ 1/3", 
-                "°√ÿ≥“„ Ë§Ë“ MD5 Hash (32 µ—«Õ—°…√æ‘¡æÏ„À≠Ë):", "µËÕ‰ª", "¬°‡≈‘°");
+                "‡πÄ‡∏û‡∏¥‡πà‡∏°‡πÑ‡∏ü‡∏•‡πå‡πÇ‡∏õ‡∏£ | ‡∏Ç‡∏±‡πâ‡∏ô‡∏ï‡∏≠‡∏ô 1/3", 
+                "‡∏Å‡∏£‡∏∏‡∏ì‡∏≤‡πÉ‡∏™‡πà‡∏Ñ‡πà‡∏≤ MD5 Hash (32 ‡∏ï‡∏±‡∏ß‡∏≠‡∏±‡∏Å‡∏©‡∏£‡∏û‡∏¥‡∏°‡∏û‡πå‡πÉ‡∏´‡∏ç‡πà):", "‡∏ï‡πà‡∏≠‡πÑ‡∏õ", "‡∏¢‡∏Å‡πÄ‡∏•‡∏¥‡∏Å");
         case 3: 
         {
             LoadDynamicCheats();
-            SendClientMessage(playerid, -1, "{00FF00}[STP-Vanguard] ∑”°“√√’‚À≈¥¢ÈÕ¡Ÿ≈ Dynamic Cheats ®“°∞“π¢ÈÕ¡Ÿ≈‡√’¬∫√ÈÕ¬·≈È«!");
+            SendClientMessage(playerid, -1, "{00FF00}[STP-Vanguard] ‡∏ó‡∏≥‡∏Å‡∏≤‡∏£‡∏£‡∏µ‡πÇ‡∏´‡∏•‡∏î‡∏Ç‡πâ‡∏≠‡∏°‡∏π‡∏• Dynamic Cheats ‡∏à‡∏≤‡∏Å‡∏ê‡∏≤‡∏ô‡∏Ç‡πâ‡∏≠‡∏°‡∏π‡∏•‡πÄ‡∏£‡∏µ‡∏¢‡∏ö‡∏£‡πâ‡∏≠‡∏¢‡πÅ‡∏•‡πâ‡∏ß!");
             ShowDynamicAdminMenu(playerid);
         }
     }
@@ -254,26 +254,26 @@ Dialog:DIALOG_DYNAMIC_MENU(playerid, response, listitem, inputtext[])
 }
 
 // ===================================================================
-// 1. · ¥ß Script Hardcoded
+// 1. ‡πÅ‡∏™‡∏î‡∏á Script Hardcoded
 // ===================================================================
 stock ShowScriptCheats(playerid)
 {
     new string[2048];
-    format(string, sizeof(string), "ª√–‡¿∑\t™◊ËÕ\t∫∑≈ß‚∑…\n");
+    format(string, sizeof(string), "‡∏õ‡∏£‡∏∞‡πÄ‡∏†‡∏ó\t‡∏ä‡∏∑‡πà‡∏≠\t‡∏ö‡∏ó‡∏•‡∏á‡πÇ‡∏ó‡∏©\n");
 
     for(new i = 0; i < sizeof(DynamicCheats); i++)
     {
         new actStr[32];
-        if(DynamicCheats[i][CheatAction] == 0) actStr = "{AAAAAA}ª‘¥„™Èß“π";
-        else if(DynamicCheats[i][CheatAction] == 1) actStr = "{FFFF00}‡µ– (Kick)";
-        else actStr = "{FF0000}·∫π (Ban)";
+        if(DynamicCheats[i][CheatAction] == 0) actStr = "{AAAAAA}‡∏õ‡∏¥‡∏î‡πÉ‡∏ä‡πâ‡∏á‡∏≤‡∏ô";
+        else if(DynamicCheats[i][CheatAction] == 1) actStr = "{FFFF00}‡πÄ‡∏ï‡∏∞ (Kick)";
+        else actStr = "{FF0000}‡πÅ‡∏ö‡∏ô (Ban)";
 
         format(string, sizeof(string), "%s{Script}\t%s\t%s\n", string, DynamicCheats[i][CheatName], actStr);
     }
 
     Dialog_Show(playerid, DIALOG_SCRIPT_CHEATS, DIALOG_STYLE_TABLIST_HEADERS, 
-        "STP-Vanguard | ‰ø≈Ï‚ª√Ω—ß„π §√‘ªµÏ (·°È‰¢‰¡Ë‰¥È)", 
-        string, "°≈—∫", "");
+        "STP-Vanguard | ‡πÑ‡∏ü‡∏•‡πå‡πÇ‡∏õ‡∏£‡∏ù‡∏±‡∏á‡πÉ‡∏ô‡∏™‡∏Ñ‡∏£‡∏¥‡∏õ‡∏ï‡πå (‡πÅ‡∏Å‡πâ‡πÑ‡∏Ç‡πÑ‡∏°‡πà‡πÑ‡∏î‡πâ)", 
+        string, "‡∏Å‡∏•‡∏±‡∏ö", "");
 }
 
 Dialog:DIALOG_SCRIPT_CHEATS(playerid, response, listitem, inputtext[])
@@ -283,12 +283,12 @@ Dialog:DIALOG_SCRIPT_CHEATS(playerid, response, listitem, inputtext[])
 }
 
 // ===================================================================
-// 2. · ¥ß + ®—¥°“√ SQL
+// 2. ‡πÅ‡∏™‡∏î‡∏á + ‡∏à‡∏±‡∏î‡∏Å‡∏≤‡∏£ SQL
 // ===================================================================
 stock ShowSQLCheatList(playerid)
 {
     if(TotalSQLCheats == 0) 
-        return SendClientMessage(playerid, -1, "{FF0000}¬—ß‰¡Ë¡’¢ÈÕ¡Ÿ≈‰ø≈Ï‚ª√ Dynamic „π SQL");
+        return SendClientMessage(playerid, -1, "{FF0000}‡∏¢‡∏±‡∏á‡πÑ‡∏°‡πà‡∏°‡∏µ‡∏Ç‡πâ‡∏≠‡∏°‡∏π‡∏•‡πÑ‡∏ü‡∏•‡πå‡πÇ‡∏õ‡∏£ Dynamic ‡πÉ‡∏ô SQL");
 
     new string[2048], count = 0;
     new startIndex = AdminPage[playerid] * CHEATS_PER_PAGE;
@@ -296,27 +296,27 @@ stock ShowSQLCheatList(playerid)
 
     if(endIndex > TotalSQLCheats) endIndex = TotalSQLCheats;
 
-    format(string, sizeof(string), "ID\t™◊ËÕ\t∫∑≈ß‚∑…\n");
+    format(string, sizeof(string), "ID\t‡∏ä‡∏∑‡πà‡∏≠\t‡∏ö‡∏ó‡∏•‡∏á‡πÇ‡∏ó‡∏©\n");
 
     for(new i = startIndex; i < endIndex; i++)
     {
         new actStr[32];
 
-        if(SQLCheats[i][CheatAction] == 0) actStr = "{AAAAAA}ª‘¥„™Èß“π";
-        else if(SQLCheats[i][CheatAction] == 1) actStr = "{FFFF00}‡µ– (Kick)";
-        else actStr = "{FF0000}·∫π (Ban)";
+        if(SQLCheats[i][CheatAction] == 0) actStr = "{AAAAAA}‡∏õ‡∏¥‡∏î‡πÉ‡∏ä‡πâ‡∏á‡∏≤‡∏ô";
+        else if(SQLCheats[i][CheatAction] == 1) actStr = "{FFFF00}‡πÄ‡∏ï‡∏∞ (Kick)";
+        else actStr = "{FF0000}‡πÅ‡∏ö‡∏ô (Ban)";
 
         format(string, sizeof(string), "%s%d\t%s\t%s\n", string, SQLCheats[i][CheatDBID], SQLCheats[i][CheatName], actStr);
         count++;
     }
 
-    if(endIndex < TotalSQLCheats) strcat(string, "{00FFFF}>>> ÀπÈ“∂—¥‰ª >>>\n");
-    if(AdminPage[playerid] > 0) strcat(string, "{00FFFF}<<< ¬ÈÕπ°≈—∫ <<<\n");
+    if(endIndex < TotalSQLCheats) strcat(string, "{00FFFF}>>> ‡∏´‡∏ô‡πâ‡∏≤‡∏ñ‡∏±‡∏î‡πÑ‡∏õ >>>\n");
+    if(AdminPage[playerid] > 0) strcat(string, "{00FFFF}<<< ‡∏¢‡πâ‡∏≠‡∏ô‡∏Å‡∏•‡∏±‡∏ö <<<\n");
 
     new title[128];
-    format(title, sizeof(title), "®—¥°“√‰ø≈Ï‚ª√ Dynamic (SQL) - ÀπÈ“ %d", AdminPage[playerid] + 1);
+    format(title, sizeof(title), "‡∏à‡∏±‡∏î‡∏Å‡∏≤‡∏£‡πÑ‡∏ü‡∏•‡πå‡πÇ‡∏õ‡∏£ Dynamic (SQL) - ‡∏´‡∏ô‡πâ‡∏≤ %d", AdminPage[playerid] + 1);
 
-    Dialog_Show(playerid, DIALOG_DYNAMIC_LIST, DIALOG_STYLE_TABLIST_HEADERS, title, string, "‡≈◊Õ°", "°≈—∫");
+    Dialog_Show(playerid, DIALOG_DYNAMIC_LIST, DIALOG_STYLE_TABLIST_HEADERS, title, string, "‡πÄ‡∏•‡∏∑‡∏≠‡∏Å", "‡∏Å‡∏•‡∏±‡∏ö");
 }
 
 Dialog:DIALOG_DYNAMIC_LIST(playerid, response, listitem, inputtext[])
@@ -348,36 +348,36 @@ Dialog:DIALOG_DYNAMIC_LIST(playerid, response, listitem, inputtext[])
 }
 
 // ===================================================================
-// Edit Menu (‡«Õ√Ï™—π· ¥ß√“¬≈–‡Õ’¬¥§√∫)
+// Edit Menu (‡πÄ‡∏ß‡∏≠‡∏£‡πå‡∏ä‡∏±‡∏ô‡πÅ‡∏™‡∏î‡∏á‡∏£‡∏≤‡∏¢‡∏•‡∏∞‡πÄ‡∏≠‡∏µ‡∏¢‡∏î‡∏Ñ‡∏£‡∏ö)
 // ===================================================================
 stock ShowDynamicEditMenu(playerid)
 {
     new index = AdminEditIndex[playerid];
     new actStr[32], info[1024];
 
-    if(SQLCheats[index][CheatAction] == 0) actStr = "ª‘¥„™Èß“π";
-    else if(SQLCheats[index][CheatAction] == 1) actStr = "‡µ– (Kick)";
-    else actStr = "·∫π (Ban)";
+    if(SQLCheats[index][CheatAction] == 0) actStr = "‡∏õ‡∏¥‡∏î‡πÉ‡∏ä‡πâ‡∏á‡∏≤‡∏ô";
+    else if(SQLCheats[index][CheatAction] == 1) actStr = "‡πÄ‡∏ï‡∏∞ (Kick)";
+    else actStr = "‡πÅ‡∏ö‡∏ô (Ban)";
 
-    // ®—¥‡√’¬ß List „ÀÈ “¡“√∂°¥‰¥È‡©æ“– 3 ∫√√∑—¥·√°
-    format(info, sizeof(info), "1. {FFFF00}·°È‰¢™◊ËÕ‰ø≈Ï {FFFFFF}(ª—®®ÿ∫—π: %s)\n", SQLCheats[index][CheatName]);
-    format(info, sizeof(info), "%s2. {FFFF00}‡ª≈’Ë¬π∫∑≈ß‚∑… {FFFFFF}(ª—®®ÿ∫—π: %s)\n", info, actStr);
-    format(info, sizeof(info), "%s3. {FF0000}≈∫¢ÈÕ¡Ÿ≈π’È∑‘Èß\n", info);
+    // ‡∏à‡∏±‡∏î‡πÄ‡∏£‡∏µ‡∏¢‡∏á List ‡πÉ‡∏´‡πâ‡∏™‡∏≤‡∏°‡∏≤‡∏£‡∏ñ‡∏Å‡∏î‡πÑ‡∏î‡πâ‡πÄ‡∏â‡∏û‡∏≤‡∏∞ 3 ‡∏ö‡∏£‡∏£‡∏ó‡∏±‡∏î‡πÅ‡∏£‡∏Å
+    format(info, sizeof(info), "1. {FFFF00}‡πÅ‡∏Å‡πâ‡πÑ‡∏Ç‡∏ä‡∏∑‡πà‡∏≠‡πÑ‡∏ü‡∏•‡πå {FFFFFF}(‡∏õ‡∏±‡∏à‡∏à‡∏∏‡∏ö‡∏±‡∏ô: %s)\n", SQLCheats[index][CheatName]);
+    format(info, sizeof(info), "%s2. {FFFF00}‡πÄ‡∏õ‡∏•‡∏µ‡πà‡∏¢‡∏ô‡∏ö‡∏ó‡∏•‡∏á‡πÇ‡∏ó‡∏© {FFFFFF}(‡∏õ‡∏±‡∏à‡∏à‡∏∏‡∏ö‡∏±‡∏ô: %s)\n", info, actStr);
+    format(info, sizeof(info), "%s3. {FF0000}‡∏•‡∏ö‡∏Ç‡πâ‡∏≠‡∏°‡∏π‡∏•‡∏ô‡∏µ‡πâ‡∏ó‡∏¥‡πâ‡∏á\n", info);
     
-    //  Ë«π√“¬≈–‡Õ’¬¥ ‰¡Ë‰¥ÈÕÕ°·∫∫¡“„ÀÈ°¥ (∂È“°¥®–‡¥Èß°≈—∫ÀπÈ“‡¥‘¡)
+    // ‡∏™‡πà‡∏ß‡∏ô‡∏£‡∏≤‡∏¢‡∏•‡∏∞‡πÄ‡∏≠‡∏µ‡∏¢‡∏î ‡πÑ‡∏°‡πà‡πÑ‡∏î‡πâ‡∏≠‡∏≠‡∏Å‡πÅ‡∏ö‡∏ö‡∏°‡∏≤‡πÉ‡∏´‡πâ‡∏Å‡∏î (‡∏ñ‡πâ‡∏≤‡∏Å‡∏î‡∏à‡∏∞‡πÄ‡∏î‡πâ‡∏á‡∏Å‡∏•‡∏±‡∏ö‡∏´‡∏ô‡πâ‡∏≤‡πÄ‡∏î‡∏¥‡∏°)
     format(info, sizeof(info), "%s{AAAAAA}---------------------------------------------------\n", info);
-    format(info, sizeof(info), "%s{FFFFFF}§Ë“ MD5: {00FFFF}%s\n", info, SQLCheats[index][CheatHash]);
-    format(info, sizeof(info), "%s{FFFFFF}‡æ‘Ë¡‚¥¬: {00FF00}%s {FFFFFF}(%s)\n", info, SQLCheats[index][CheatAddedBy], SQLCheats[index][CheatAddedDate]);
+    format(info, sizeof(info), "%s{FFFFFF}‡∏Ñ‡πà‡∏≤ MD5: {00FFFF}%s\n", info, SQLCheats[index][CheatHash]);
+    format(info, sizeof(info), "%s{FFFFFF}‡πÄ‡∏û‡∏¥‡πà‡∏°‡πÇ‡∏î‡∏¢: {00FF00}%s {FFFFFF}(%s)\n", info, SQLCheats[index][CheatAddedBy], SQLCheats[index][CheatAddedDate]);
     
     if(strcmp(SQLCheats[index][CheatUpdatedBy], "-", true) != 0) {
-        format(info, sizeof(info), "%s{FFFFFF}Õ—æ‡¥∑≈Ë“ ÿ¥‚¥¬: {FFA500}%s {FFFFFF}(%s)", info, SQLCheats[index][CheatUpdatedBy], SQLCheats[index][CheatUpdatedDate]);
+        format(info, sizeof(info), "%s{FFFFFF}‡∏≠‡∏±‡∏û‡πÄ‡∏î‡∏ó‡∏•‡πà‡∏≤‡∏™‡∏∏‡∏î‡πÇ‡∏î‡∏¢: {FFA500}%s {FFFFFF}(%s)", info, SQLCheats[index][CheatUpdatedBy], SQLCheats[index][CheatUpdatedDate]);
     } else {
-        format(info, sizeof(info), "%s{FFFFFF}Õ—æ‡¥∑≈Ë“ ÿ¥‚¥¬: {AAAAAA}- ¬—ß‰¡Ë¡’ª√–«—µ‘°“√Õ—æ‡¥∑ -", info);
+        format(info, sizeof(info), "%s{FFFFFF}‡∏≠‡∏±‡∏û‡πÄ‡∏î‡∏ó‡∏•‡πà‡∏≤‡∏™‡∏∏‡∏î‡πÇ‡∏î‡∏¢: {AAAAAA}- ‡∏¢‡∏±‡∏á‡πÑ‡∏°‡πà‡∏°‡∏µ‡∏õ‡∏£‡∏∞‡∏ß‡∏±‡∏ï‡∏¥‡∏Å‡∏≤‡∏£‡∏≠‡∏±‡∏û‡πÄ‡∏î‡∏ó -", info);
     }
 
     Dialog_Show(playerid, DIALOG_DYNAMIC_EDIT_MENU, DIALOG_STYLE_LIST, 
-        "STP-Vanguard | √“¬≈–‡Õ’¬¥·≈–°“√®—¥°“√", 
-        info, "‡≈◊Õ°", "¬ÈÕπ°≈—∫");
+        "STP-Vanguard | ‡∏£‡∏≤‡∏¢‡∏•‡∏∞‡πÄ‡∏≠‡∏µ‡∏¢‡∏î‡πÅ‡∏•‡∏∞‡∏Å‡∏≤‡∏£‡∏à‡∏±‡∏î‡∏Å‡∏≤‡∏£", 
+        info, "‡πÄ‡∏•‡∏∑‡∏≠‡∏Å", "‡∏¢‡πâ‡∏≠‡∏ô‡∏Å‡∏•‡∏±‡∏ö");
 }
 
 Dialog:DIALOG_DYNAMIC_EDIT_MENU(playerid, response, listitem, inputtext[])
@@ -386,16 +386,16 @@ Dialog:DIALOG_DYNAMIC_EDIT_MENU(playerid, response, listitem, inputtext[])
 
     switch(listitem)
     {
-        case 0: Dialog_Show(playerid, DIALOG_DYNAMIC_EDIT_NAME, DIALOG_STYLE_INPUT, "·°È‰¢™◊ËÕ", "„ Ë™◊ËÕ„À¡Ë∑’ËµÈÕß°“√:", "∫—π∑÷°", "¬°‡≈‘°");
-        case 1: Dialog_Show(playerid, DYNAMIC_EDIT_ACTION, DIALOG_STYLE_LIST, "‡ª≈’Ë¬π∫∑≈ß‚∑…", "0 - ª‘¥„™Èß“π\n1 - ‡µ– (Kick)\n2 - ·∫π (Ban)", "∫—π∑÷°", "¬°‡≈‘°");
-        case 2: Dialog_Show(playerid, DIALOG_DYNAMIC_DELETE, DIALOG_STYLE_MSGBOX, "¬◊π¬—π°“√≈∫", "{FF0000}§ÿ≥·πË„®À√◊Õ‰¡Ë«Ë“µÈÕß°“√≈∫¢ÈÕ¡Ÿ≈π’È?", "¬◊π¬—π", "¬°‡≈‘°");
-        default: ShowDynamicEditMenu(playerid); // °√≥’‡º≈Õ°¥∫√√∑—¥∑’Ë‡ªÁπ¢ÈÕ¡Ÿ≈·®Èß‡µ◊Õπ „ÀÈ‡¥Èß· ¥ßÀπÈ“µË“ß‡¥‘¡
+        case 0: Dialog_Show(playerid, DIALOG_DYNAMIC_EDIT_NAME, DIALOG_STYLE_INPUT, "‡πÅ‡∏Å‡πâ‡πÑ‡∏Ç‡∏ä‡∏∑‡πà‡∏≠", "‡πÉ‡∏™‡πà‡∏ä‡∏∑‡πà‡∏≠‡πÉ‡∏´‡∏°‡πà‡∏ó‡∏µ‡πà‡∏ï‡πâ‡∏≠‡∏á‡∏Å‡∏≤‡∏£:", "‡∏ö‡∏±‡∏ô‡∏ó‡∏∂‡∏Å", "‡∏¢‡∏Å‡πÄ‡∏•‡∏¥‡∏Å");
+        case 1: Dialog_Show(playerid, DYNAMIC_EDIT_ACTION, DIALOG_STYLE_LIST, "‡πÄ‡∏õ‡∏•‡∏µ‡πà‡∏¢‡∏ô‡∏ö‡∏ó‡∏•‡∏á‡πÇ‡∏ó‡∏©", "0 - ‡∏õ‡∏¥‡∏î‡πÉ‡∏ä‡πâ‡∏á‡∏≤‡∏ô\n1 - ‡πÄ‡∏ï‡∏∞ (Kick)\n2 - ‡πÅ‡∏ö‡∏ô (Ban)", "‡∏ö‡∏±‡∏ô‡∏ó‡∏∂‡∏Å", "‡∏¢‡∏Å‡πÄ‡∏•‡∏¥‡∏Å");
+        case 2: Dialog_Show(playerid, DIALOG_DYNAMIC_DELETE, DIALOG_STYLE_MSGBOX, "‡∏¢‡∏∑‡∏ô‡∏¢‡∏±‡∏ô‡∏Å‡∏≤‡∏£‡∏•‡∏ö", "{FF0000}‡∏Ñ‡∏∏‡∏ì‡πÅ‡∏ô‡πà‡πÉ‡∏à‡∏´‡∏£‡∏∑‡∏≠‡πÑ‡∏°‡πà‡∏ß‡πà‡∏≤‡∏ï‡πâ‡∏≠‡∏á‡∏Å‡∏≤‡∏£‡∏•‡∏ö‡∏Ç‡πâ‡∏≠‡∏°‡∏π‡∏•‡∏ô‡∏µ‡πâ?", "‡∏¢‡∏∑‡∏ô‡∏¢‡∏±‡∏ô", "‡∏¢‡∏Å‡πÄ‡∏•‡∏¥‡∏Å");
+        default: ShowDynamicEditMenu(playerid); // ‡∏Å‡∏£‡∏ì‡∏µ‡πÄ‡∏ú‡∏•‡∏≠‡∏Å‡∏î‡∏ö‡∏£‡∏£‡∏ó‡∏±‡∏î‡∏ó‡∏µ‡πà‡πÄ‡∏õ‡πá‡∏ô‡∏Ç‡πâ‡∏≠‡∏°‡∏π‡∏•‡πÅ‡∏à‡πâ‡∏á‡πÄ‡∏ï‡∏∑‡∏≠‡∏ô ‡πÉ‡∏´‡πâ‡πÄ‡∏î‡πâ‡∏á‡πÅ‡∏™‡∏î‡∏á‡∏´‡∏ô‡πâ‡∏≤‡∏ï‡πà‡∏≤‡∏á‡πÄ‡∏î‡∏¥‡∏°
     }
     return 1;
 }
 
 // ===================================================================
-// ‡æ‘Ë¡‰ø≈Ï„À¡Ë (3 ¢—ÈπµÕπ)
+// ‡πÄ‡∏û‡∏¥‡πà‡∏°‡πÑ‡∏ü‡∏•‡πå‡πÉ‡∏´‡∏°‡πà (3 ‡∏Ç‡∏±‡πâ‡∏ô‡∏ï‡∏≠‡∏ô)
 // ===================================================================
 Dialog:DIALOG_DYNAMIC_ADD_HASH(playerid, response, listitem, inputtext[])
 {
@@ -403,35 +403,35 @@ Dialog:DIALOG_DYNAMIC_ADD_HASH(playerid, response, listitem, inputtext[])
 
     if(strlen(inputtext) != 32) 
         return Dialog_Show(playerid, DIALOG_DYNAMIC_ADD_HASH, DIALOG_STYLE_INPUT, 
-            "‡æ‘Ë¡‰ø≈Ï‚ª√ | ¢—ÈπµÕπ 1/3", 
-            "{FF0000}MD5 µÈÕß¡’§«“¡¬“« 32 µ—«Õ—°…√‡∑Ë“π—Èπ!\n{FFFFFF}°√ÿ≥“„ Ë§Ë“ MD5 Hash „À¡Ë:", "µËÕ‰ª", "¬°‡≈‘°");
+            "‡πÄ‡∏û‡∏¥‡πà‡∏°‡πÑ‡∏ü‡∏•‡πå‡πÇ‡∏õ‡∏£ | ‡∏Ç‡∏±‡πâ‡∏ô‡∏ï‡∏≠‡∏ô 1/3", 
+            "{FF0000}MD5 ‡∏ï‡πâ‡∏≠‡∏á‡∏°‡∏µ‡∏Ñ‡∏ß‡∏≤‡∏°‡∏¢‡∏≤‡∏ß 32 ‡∏ï‡∏±‡∏ß‡∏≠‡∏±‡∏Å‡∏©‡∏£‡πÄ‡∏ó‡πà‡∏≤‡∏ô‡∏±‡πâ‡∏ô!\n{FFFFFF}‡∏Å‡∏£‡∏∏‡∏ì‡∏≤‡πÉ‡∏™‡πà‡∏Ñ‡πà‡∏≤ MD5 Hash ‡πÉ‡∏´‡∏°‡πà:", "‡∏ï‡πà‡∏≠‡πÑ‡∏õ", "‡∏¢‡∏Å‡πÄ‡∏•‡∏¥‡∏Å");
 
     if(IsHashExists(inputtext)) 
         return Dialog_Show(playerid, DIALOG_DYNAMIC_ADD_HASH, DIALOG_STYLE_INPUT, 
-            "‡æ‘Ë¡‰ø≈Ï‚ª√ | ¢—ÈπµÕπ 1/3", 
-            "{FF0000}§Ë“ MD5 π’È¡’Õ¬ŸË„π√–∫∫·≈È« (´È”)!\n{FFFFFF}°√ÿ≥“„ Ë§Ë“ MD5 Hash „À¡Ë:", "µËÕ‰ª", "¬°‡≈‘°");
+            "‡πÄ‡∏û‡∏¥‡πà‡∏°‡πÑ‡∏ü‡∏•‡πå‡πÇ‡∏õ‡∏£ | ‡∏Ç‡∏±‡πâ‡∏ô‡∏ï‡∏≠‡∏ô 1/3", 
+            "{FF0000}‡∏Ñ‡πà‡∏≤ MD5 ‡∏ô‡∏µ‡πâ‡∏°‡∏µ‡∏≠‡∏¢‡∏π‡πà‡πÉ‡∏ô‡∏£‡∏∞‡∏ö‡∏ö‡πÅ‡∏•‡πâ‡∏ß (‡∏ã‡πâ‡∏≥)!\n{FFFFFF}‡∏Å‡∏£‡∏∏‡∏ì‡∏≤‡πÉ‡∏™‡πà‡∏Ñ‡πà‡∏≤ MD5 Hash ‡πÉ‡∏´‡∏°‡πà:", "‡∏ï‡πà‡∏≠‡πÑ‡∏õ", "‡∏¢‡∏Å‡πÄ‡∏•‡∏¥‡∏Å");
 
     strcopy(AdminTempHash[playerid], inputtext);
     Dialog_Show(playerid, DIALOG_DYNAMIC_ADD_NAME, DIALOG_STYLE_INPUT, 
-        "‡æ‘Ë¡‰ø≈Ï‚ª√ | ¢—ÈπµÕπ 2/3", 
-        "°√ÿ≥“µ—Èß™◊ËÕ‡æ◊ËÕ„™È·®Èß‡µ◊Õπ (‡™Ëπ Aimbot.exe, Godmode.asi):", "µËÕ‰ª", "¬ÈÕπ°≈—∫");
+        "‡πÄ‡∏û‡∏¥‡πà‡∏°‡πÑ‡∏ü‡∏•‡πå‡πÇ‡∏õ‡∏£ | ‡∏Ç‡∏±‡πâ‡∏ô‡∏ï‡∏≠‡∏ô 2/3", 
+        "‡∏Å‡∏£‡∏∏‡∏ì‡∏≤‡∏ï‡∏±‡πâ‡∏á‡∏ä‡∏∑‡πà‡∏≠‡πÄ‡∏û‡∏∑‡πà‡∏≠‡πÉ‡∏ä‡πâ‡πÅ‡∏à‡πâ‡∏á‡πÄ‡∏ï‡∏∑‡∏≠‡∏ô (‡πÄ‡∏ä‡πà‡∏ô Aimbot.exe, Godmode.asi):", "‡∏ï‡πà‡∏≠‡πÑ‡∏õ", "‡∏¢‡πâ‡∏≠‡∏ô‡∏Å‡∏•‡∏±‡∏ö");
 }
 
 Dialog:DIALOG_DYNAMIC_ADD_NAME(playerid, response, listitem, inputtext[])
 {
     if(!response) return Dialog_Show(playerid, DIALOG_DYNAMIC_ADD_HASH, DIALOG_STYLE_INPUT, 
-        "‡æ‘Ë¡‰ø≈Ï‚ª√ | ¢—ÈπµÕπ 1/3", "°√ÿ≥“„ Ë§Ë“ MD5 Hash (32 µ—«Õ—°…√æ‘¡æÏ„À≠Ë):", "µËÕ‰ª", "¬°‡≈‘°");
+        "‡πÄ‡∏û‡∏¥‡πà‡∏°‡πÑ‡∏ü‡∏•‡πå‡πÇ‡∏õ‡∏£ | ‡∏Ç‡∏±‡πâ‡∏ô‡∏ï‡∏≠‡∏ô 1/3", "‡∏Å‡∏£‡∏∏‡∏ì‡∏≤‡πÉ‡∏™‡πà‡∏Ñ‡πà‡∏≤ MD5 Hash (32 ‡∏ï‡∏±‡∏ß‡∏≠‡∏±‡∏Å‡∏©‡∏£‡∏û‡∏¥‡∏°‡∏û‡πå‡πÉ‡∏´‡∏ç‡πà):", "‡∏ï‡πà‡∏≠‡πÑ‡∏õ", "‡∏¢‡∏Å‡πÄ‡∏•‡∏¥‡∏Å");
 
     if(strlen(inputtext) < 2) 
         return Dialog_Show(playerid, DIALOG_DYNAMIC_ADD_NAME, DIALOG_STYLE_INPUT, 
-            "‡æ‘Ë¡‰ø≈Ï‚ª√ | ¢—ÈπµÕπ 2/3", 
-            "{FF0000}™◊ËÕ —Èπ‡°‘π‰ª!\n{FFFFFF}°√ÿ≥“µ—Èß™◊ËÕ‡æ◊ËÕ„™È·®Èß‡µ◊Õπ:", "µËÕ‰ª", "¬ÈÕπ°≈—∫");
+            "‡πÄ‡∏û‡∏¥‡πà‡∏°‡πÑ‡∏ü‡∏•‡πå‡πÇ‡∏õ‡∏£ | ‡∏Ç‡∏±‡πâ‡∏ô‡∏ï‡∏≠‡∏ô 2/3", 
+            "{FF0000}‡∏ä‡∏∑‡πà‡∏≠‡∏™‡∏±‡πâ‡∏ô‡πÄ‡∏Å‡∏¥‡∏ô‡πÑ‡∏õ!\n{FFFFFF}‡∏Å‡∏£‡∏∏‡∏ì‡∏≤‡∏ï‡∏±‡πâ‡∏á‡∏ä‡∏∑‡πà‡∏≠‡πÄ‡∏û‡∏∑‡πà‡∏≠‡πÉ‡∏ä‡πâ‡πÅ‡∏à‡πâ‡∏á‡πÄ‡∏ï‡∏∑‡∏≠‡∏ô:", "‡∏ï‡πà‡∏≠‡πÑ‡∏õ", "‡∏¢‡πâ‡∏≠‡∏ô‡∏Å‡∏•‡∏±‡∏ö");
 
     strcopy(AdminTempName[playerid], inputtext);
     Dialog_Show(playerid, DYNAMIC_ADD_ACTION, DIALOG_STYLE_LIST, 
-        "‡æ‘Ë¡‰ø≈Ï‚ª√ | ¢—ÈπµÕπ 3/3", 
-        "0 - ª‘¥„™Èß“π (µ√«®‡®Õ·µË‰¡Ë∑”Õ–‰√)\n1 - ‡µ–ÕÕ°®“°‡´‘√Ïø‡«Õ√Ï (Kick)\n2 - ·∫π∫—≠™’ + HWID (Ban)", 
-        "∫—π∑÷°", "¬ÈÕπ°≈—∫");
+        "‡πÄ‡∏û‡∏¥‡πà‡∏°‡πÑ‡∏ü‡∏•‡πå‡πÇ‡∏õ‡∏£ | ‡∏Ç‡∏±‡πâ‡∏ô‡∏ï‡∏≠‡∏ô 3/3", 
+        "0 - ‡∏õ‡∏¥‡∏î‡πÉ‡∏ä‡πâ‡∏á‡∏≤‡∏ô (‡∏ï‡∏£‡∏ß‡∏à‡πÄ‡∏à‡∏≠‡πÅ‡∏ï‡πà‡πÑ‡∏°‡πà‡∏ó‡∏≥‡∏≠‡∏∞‡πÑ‡∏£)\n1 - ‡πÄ‡∏ï‡∏∞‡∏≠‡∏≠‡∏Å‡∏à‡∏≤‡∏Å‡πÄ‡∏ã‡∏¥‡∏£‡πå‡∏ü‡πÄ‡∏ß‡∏≠‡∏£‡πå (Kick)\n2 - ‡πÅ‡∏ö‡∏ô‡∏ö‡∏±‡∏ç‡∏ä‡∏µ + HWID (Ban)", 
+        "‡∏ö‡∏±‡∏ô‡∏ó‡∏∂‡∏Å", "‡∏¢‡πâ‡∏≠‡∏ô‡∏Å‡∏•‡∏±‡∏ö");
 }
 
 Dialog:DYNAMIC_ADD_ACTION(playerid, response, listitem, inputtext[])
@@ -439,9 +439,9 @@ Dialog:DYNAMIC_ADD_ACTION(playerid, response, listitem, inputtext[])
     if(!response)
     {
         return Dialog_Show(playerid, DIALOG_DYNAMIC_ADD_NAME, DIALOG_STYLE_INPUT,
-            "‡æ‘Ë¡‰ø≈Ï‚ª√ | ¢—ÈπµÕπ 2/3", 
-            "°√ÿ≥“µ—Èß™◊ËÕ‡æ◊ËÕ„™È·®Èß‡µ◊Õπ (‡™Ëπ Aimbot.exe, Godmode.asi):", 
-            "µËÕ‰ª", "¬ÈÕπ°≈—∫");
+            "‡πÄ‡∏û‡∏¥‡πà‡∏°‡πÑ‡∏ü‡∏•‡πå‡πÇ‡∏õ‡∏£ | ‡∏Ç‡∏±‡πâ‡∏ô‡∏ï‡∏≠‡∏ô 2/3", 
+            "‡∏Å‡∏£‡∏∏‡∏ì‡∏≤‡∏ï‡∏±‡πâ‡∏á‡∏ä‡∏∑‡πà‡∏≠‡πÄ‡∏û‡∏∑‡πà‡∏≠‡πÉ‡∏ä‡πâ‡πÅ‡∏à‡πâ‡∏á‡πÄ‡∏ï‡∏∑‡∏≠‡∏ô (‡πÄ‡∏ä‡πà‡∏ô Aimbot.exe, Godmode.asi):", 
+            "‡∏ï‡πà‡∏≠‡πÑ‡∏õ", "‡∏¢‡πâ‡∏≠‡∏ô‡∏Å‡∏•‡∏±‡∏ö");
     }
 
     switch(listitem)
@@ -461,7 +461,7 @@ Dialog:DYNAMIC_ADD_ACTION(playerid, response, listitem, inputtext[])
             mysql_tquery(g_SQL, query, "LoadDynamicCheats", "");
 
             new str[128];
-            format(str, sizeof(str), "{00FF00}‡æ‘Ë¡ %s (MD5: %s) ‡√’¬∫√ÈÕ¬·≈È«!", 
+            format(str, sizeof(str), "{00FF00}‡πÄ‡∏û‡∏¥‡πà‡∏° %s (MD5: %s) ‡πÄ‡∏£‡∏µ‡∏¢‡∏ö‡∏£‡πâ‡∏≠‡∏¢‡πÅ‡∏•‡πâ‡∏ß!", 
                 AdminTempName[playerid], AdminTempHash[playerid]);
             SendClientMessage(playerid, -1, str);
             
@@ -472,7 +472,7 @@ Dialog:DYNAMIC_ADD_ACTION(playerid, response, listitem, inputtext[])
 }
 
 // ===================================================================
-// Edit / Delete ¢ÈÕ¡Ÿ≈
+// Edit / Delete ‡∏Ç‡πâ‡∏≠‡∏°‡∏π‡∏•
 // ===================================================================
 Dialog:DIALOG_DYNAMIC_EDIT_NAME(playerid, response, listitem, inputtext[])
 {
@@ -481,7 +481,7 @@ Dialog:DIALOG_DYNAMIC_EDIT_NAME(playerid, response, listitem, inputtext[])
     new query[512], escName[64], escAdmin[MAX_PLAYER_NAME];
 
     if(strlen(inputtext) < 2) {
-        SendClientMessage(playerid, -1, "{FF0000}™◊ËÕ —Èπ‡°‘π‰ª!");
+        SendClientMessage(playerid, -1, "{FF0000}‡∏ä‡∏∑‡πà‡∏≠‡∏™‡∏±‡πâ‡∏ô‡πÄ‡∏Å‡∏¥‡∏ô‡πÑ‡∏õ!");
         return ShowDynamicEditMenu(playerid);
     }
 
@@ -494,7 +494,7 @@ Dialog:DIALOG_DYNAMIC_EDIT_NAME(playerid, response, listitem, inputtext[])
     
     mysql_tquery(g_SQL, query, "LoadDynamicCheats", "");
 
-    SendClientMessage(playerid, -1, "{00FF00}Õ—æ‡¥∑™◊ËÕ ”‡√Á®!");
+    SendClientMessage(playerid, -1, "{00FF00}‡∏≠‡∏±‡∏û‡πÄ‡∏î‡∏ó‡∏ä‡∏∑‡πà‡∏≠‡∏™‡∏≥‡πÄ‡∏£‡πá‡∏à!");
     ShowSQLCheatList(playerid);
 }
 
@@ -512,7 +512,7 @@ Dialog:DYNAMIC_EDIT_ACTION(playerid, response, listitem, inputtext[])
     
     mysql_tquery(g_SQL, query, "LoadDynamicCheats", "");
 
-    SendClientMessage(playerid, -1, "{00FF00}Õ—æ‡¥∑∫∑≈ß‚∑… ”‡√Á®!");
+    SendClientMessage(playerid, -1, "{00FF00}‡∏≠‡∏±‡∏û‡πÄ‡∏î‡∏ó‡∏ö‡∏ó‡∏•‡∏á‡πÇ‡∏ó‡∏©‡∏™‡∏≥‡πÄ‡∏£‡πá‡∏à!");
     ShowSQLCheatList(playerid);
 }
 
@@ -528,6 +528,6 @@ Dialog:DIALOG_DYNAMIC_DELETE(playerid, response, listitem, inputtext[])
 
     mysql_tquery(g_SQL, query, "LoadDynamicCheats", "");
 
-    SendClientMessage(playerid, -1, "{00FF00}≈∫¢ÈÕ¡Ÿ≈ÕÕ°®“°∞“π¢ÈÕ¡Ÿ≈‡√’¬∫√ÈÕ¬·≈È«!");
+    SendClientMessage(playerid, -1, "{00FF00}‡∏•‡∏ö‡∏Ç‡πâ‡∏≠‡∏°‡∏π‡∏•‡∏≠‡∏≠‡∏Å‡∏à‡∏≤‡∏Å‡∏ê‡∏≤‡∏ô‡∏Ç‡πâ‡∏≠‡∏°‡∏π‡∏•‡πÄ‡∏£‡∏µ‡∏¢‡∏ö‡∏£‡πâ‡∏≠‡∏¢‡πÅ‡∏•‡πâ‡∏ß!");
     ShowSQLCheatList(playerid);
 }

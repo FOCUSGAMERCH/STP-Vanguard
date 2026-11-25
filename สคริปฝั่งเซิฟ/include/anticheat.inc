@@ -4,65 +4,65 @@
 #define _anticheat_included
 
 /**
- * ‡√’¬°‡¡◊ËÕ client  Ëß response °≈—∫ ”‡√Á® À√◊Õ fail handshake
- * @param playerid              ID ¢ÕßºŸÈ‡≈Ëπ
- * @param is_latest_version     1 =  ”‡√Á® (‡«Õ√Ï™—π≈Ë“ ÿ¥) | 0 = fail À√◊Õ‡«Õ√Ï™—π‡°Ë“
+ * ‡πÄ‡∏£‡∏µ‡∏¢‡∏Å‡πÄ‡∏°‡∏∑‡πà‡∏≠ client ‡∏™‡πà‡∏á response ‡∏Å‡∏•‡∏±‡∏ö‡∏™‡∏≥‡πÄ‡∏£‡πá‡∏à ‡∏´‡∏£‡∏∑‡∏≠ fail handshake
+ * @param playerid              ID ‡∏Ç‡∏≠‡∏á‡∏ú‡∏π‡πâ‡πÄ‡∏•‡πà‡∏ô
+ * @param is_latest_version     1 = ‡∏™‡∏≥‡πÄ‡∏£‡πá‡∏à (‡πÄ‡∏ß‡∏≠‡∏£‡πå‡∏ä‡∏±‡∏ô‡∏•‡πà‡∏≤‡∏™‡∏∏‡∏î) | 0 = fail ‡∏´‡∏£‡∏∑‡∏≠‡πÄ‡∏ß‡∏≠‡∏£‡πå‡∏ä‡∏±‡∏ô‡πÄ‡∏Å‡πà‡∏≤
  */
 forward OnPlayerAntiCheatConnect(playerid, bool:is_latest_version);
 
 /**
- * ‡√’¬°‡¡◊ËÕ‰¥È√—∫ª√–‡¿∑¢Õß Anti-Cheat client
- * @param playerid      ID ¢ÕßºŸÈ‡≈Ëπ
- * @param clientType    0 = ‡«Õ√Ï™—πª°µ‘ | 1 = ‡«Õ√Ï™—π nocleo (µ√«® CLEO/SAMPFUNCS ‡æ‘Ë¡)
+ * ‡πÄ‡∏£‡∏µ‡∏¢‡∏Å‡πÄ‡∏°‡∏∑‡πà‡∏≠‡πÑ‡∏î‡πâ‡∏£‡∏±‡∏ö‡∏õ‡∏£‡∏∞‡πÄ‡∏†‡∏ó‡∏Ç‡∏≠‡∏á Anti-Cheat client
+ * @param playerid      ID ‡∏Ç‡∏≠‡∏á‡∏ú‡∏π‡πâ‡πÄ‡∏•‡πà‡∏ô
+ * @param clientType    0 = ‡πÄ‡∏ß‡∏≠‡∏£‡πå‡∏ä‡∏±‡∏ô‡∏õ‡∏Å‡∏ï‡∏¥ | 1 = ‡πÄ‡∏ß‡∏≠‡∏£‡πå‡∏ä‡∏±‡∏ô nocleo (‡∏ï‡∏£‡∏ß‡∏à CLEO/SAMPFUNCS ‡πÄ‡∏û‡∏¥‡πà‡∏°)
  */
 forward OnPlayerAntiCheatType(playerid, clientType);
 
 /**
- * ‡√’¬°‡¡◊ËÕ‰¥È√—∫ HWID ®“° client
- * @param playerid  ID ¢ÕßºŸÈ‡≈Ëπ
- * @param hwid[]    HWID „π√Ÿª·∫∫ UUID (36 µ—«Õ—°…√ + null terminator)
+ * ‡πÄ‡∏£‡∏µ‡∏¢‡∏Å‡πÄ‡∏°‡∏∑‡πà‡∏≠‡πÑ‡∏î‡πâ‡∏£‡∏±‡∏ö HWID ‡∏à‡∏≤‡∏Å client
+ * @param playerid  ID ‡∏Ç‡∏≠‡∏á‡∏ú‡∏π‡πâ‡πÄ‡∏•‡πà‡∏ô
+ * @param hwid[]    HWID ‡πÉ‡∏ô‡∏£‡∏π‡∏õ‡πÅ‡∏ö‡∏ö UUID (36 ‡∏ï‡∏±‡∏ß‡∏≠‡∏±‡∏Å‡∏©‡∏£ + null terminator)
  */
 forward OnPlayerCheckHwid(playerid, const hwid[]);
 
-forward OnPlayerCheckHwidV2(playerid, const hwidv2[]); // v2 ·∫∫√’ hwid ‰¥È¬“°
+forward OnPlayerCheckHwidV2(playerid, const hwidv2[]); // v2 ‡πÅ‡∏ö‡∏ö‡∏£‡∏µ hwid ‡πÑ‡∏î‡πâ‡∏¢‡∏≤‡∏Å
 
 
 
 /**
- * ‡√’¬°‡¡◊ËÕ Client  Ëß¢ÈÕ¡Ÿ≈‰ø≈Ï/‚ª√‡´ ∑’Ë°”≈—ß∑”ß“π¡“„ÀÈ‡´‘√Ïø‡«Õ√Ïµ√«® Õ∫ (Dynamic Check)
- * @param playerid  ID ¢ÕßºŸÈ‡≈Ëπ
- * @param fileType  1 = ‰ø≈Ï„π‚ø≈‡¥Õ√Ï‡°¡ (.asi, .cs, .dll) | 2 = ‚ª√·°√¡¿“¬πÕ° (Process .exe)
- * @param filename[] ™◊ËÕ‰ø≈Ï (‡™Ëπ Ton.asi, Ddxz.exe)
- * @param md5hash[]  MD5 Hash ¢Õß‰ø≈Ïπ—Èπ (§«“¡¬“« 32 µ—«Õ—°…√)
+ * ‡πÄ‡∏£‡∏µ‡∏¢‡∏Å‡πÄ‡∏°‡∏∑‡πà‡∏≠ Client ‡∏™‡πà‡∏á‡∏Ç‡πâ‡∏≠‡∏°‡∏π‡∏•‡πÑ‡∏ü‡∏•‡πå/‡πÇ‡∏õ‡∏£‡πÄ‡∏ã‡∏™‡∏ó‡∏µ‡πà‡∏Å‡∏≥‡∏•‡∏±‡∏á‡∏ó‡∏≥‡∏á‡∏≤‡∏ô‡∏°‡∏≤‡πÉ‡∏´‡πâ‡πÄ‡∏ã‡∏¥‡∏£‡πå‡∏ü‡πÄ‡∏ß‡∏≠‡∏£‡πå‡∏ï‡∏£‡∏ß‡∏à‡∏™‡∏≠‡∏ö (Dynamic Check)
+ * @param playerid  ID ‡∏Ç‡∏≠‡∏á‡∏ú‡∏π‡πâ‡πÄ‡∏•‡πà‡∏ô
+ * @param fileType  1 = ‡πÑ‡∏ü‡∏•‡πå‡πÉ‡∏ô‡πÇ‡∏ü‡∏•‡πÄ‡∏î‡∏≠‡∏£‡πå‡πÄ‡∏Å‡∏° (.asi, .cs, .dll) | 2 = ‡πÇ‡∏õ‡∏£‡πÅ‡∏Å‡∏£‡∏°‡∏†‡∏≤‡∏¢‡∏ô‡∏≠‡∏Å (Process .exe)
+ * @param filename[] ‡∏ä‡∏∑‡πà‡∏≠‡πÑ‡∏ü‡∏•‡πå (‡πÄ‡∏ä‡πà‡∏ô Ton.asi, Ddxz.exe)
+ * @param md5hash[]  MD5 Hash ‡∏Ç‡∏≠‡∏á‡πÑ‡∏ü‡∏•‡πå‡∏ô‡∏±‡πâ‡∏ô (‡∏Ñ‡∏ß‡∏≤‡∏°‡∏¢‡∏≤‡∏ß 32 ‡∏ï‡∏±‡∏ß‡∏≠‡∏±‡∏Å‡∏©‡∏£)
  */
 forward OnPlayerDetectedDynamicFile(playerid, fileType, const filename[], const md5hash[]);
 
 
 
 /**
- * ‡√’¬°‡¡◊ËÕµ√«®æ∫‰ø≈ÏµÈÕßÀÈ“¡®“° client (ºË“π°“√ ·°π SHA-256 ∫π¥‘ °Ï)
- * @param playerid  ID ¢ÕßºŸÈ‡≈Ëπ
- * @param cheatid   ID ¢Õß‰ø≈Ï‚°ß∑’Ë‡®Õ (µ√ß°—∫„π client database)
+ * ‡πÄ‡∏£‡∏µ‡∏¢‡∏Å‡πÄ‡∏°‡∏∑‡πà‡∏≠‡∏ï‡∏£‡∏ß‡∏à‡∏û‡∏ö‡πÑ‡∏ü‡∏•‡πå‡∏ï‡πâ‡∏≠‡∏á‡∏´‡πâ‡∏≤‡∏°‡∏à‡∏≤‡∏Å client (‡∏ú‡πà‡∏≤‡∏ô‡∏Å‡∏≤‡∏£‡∏™‡πÅ‡∏Å‡∏ô SHA-256 ‡∏ö‡∏ô‡∏î‡∏¥‡∏™‡∏Å‡πå)
+ * @param playerid  ID ‡∏Ç‡∏≠‡∏á‡∏ú‡∏π‡πâ‡πÄ‡∏•‡πà‡∏ô
+ * @param cheatid   ID ‡∏Ç‡∏≠‡∏á‡πÑ‡∏ü‡∏•‡πå‡πÇ‡∏Å‡∏á‡∏ó‡∏µ‡πà‡πÄ‡∏à‡∏≠ (‡∏ï‡∏£‡∏á‡∏Å‡∏±‡∏ö‡πÉ‡∏ô client database)
  */
 forward OnPlayerDetectedIllegalFile(playerid, cheatid);
 
 
 
 /**
- * ‡√’¬°‡¡◊ËÕ client  Ëß‚ø≈‡¥Õ√Ï‡°¡¡“„ÀÈ‡´‘√Ïø‡«Õ√Ï
- * @param playerid      ID ¢ÕßºŸÈ‡≈Ëπ
- * @param folderPath[]  æ“∏‡µÁ¡¢Õß‚ø≈‡¥Õ√Ï‡°¡ (‡™Ëπ C:\GTA TARO 7.0 by assmax)
- * @param summary[]     √“¬°“√‰ø≈Ï+‚ø≈‡¥Õ√Ï∑—ÈßÀ¡¥„π‚ø≈‡¥Õ√Ï‡°¡
+ * ‡πÄ‡∏£‡∏µ‡∏¢‡∏Å‡πÄ‡∏°‡∏∑‡πà‡∏≠ client ‡∏™‡πà‡∏á‡πÇ‡∏ü‡∏•‡πÄ‡∏î‡∏≠‡∏£‡πå‡πÄ‡∏Å‡∏°‡∏°‡∏≤‡πÉ‡∏´‡πâ‡πÄ‡∏ã‡∏¥‡∏£‡πå‡∏ü‡πÄ‡∏ß‡∏≠‡∏£‡πå
+ * @param playerid      ID ‡∏Ç‡∏≠‡∏á‡∏ú‡∏π‡πâ‡πÄ‡∏•‡πà‡∏ô
+ * @param folderPath[]  ‡∏û‡∏≤‡∏ò‡πÄ‡∏ï‡πá‡∏°‡∏Ç‡∏≠‡∏á‡πÇ‡∏ü‡∏•‡πÄ‡∏î‡∏≠‡∏£‡πå‡πÄ‡∏Å‡∏° (‡πÄ‡∏ä‡πà‡∏ô C:\GTA TARO 7.0 by assmax)
+ * @param summary[]     ‡∏£‡∏≤‡∏¢‡∏Å‡∏≤‡∏£‡πÑ‡∏ü‡∏•‡πå+‡πÇ‡∏ü‡∏•‡πÄ‡∏î‡∏≠‡∏£‡πå‡∏ó‡∏±‡πâ‡∏á‡∏´‡∏°‡∏î‡πÉ‡∏ô‡πÇ‡∏ü‡∏•‡πÄ‡∏î‡∏≠‡∏£‡πå‡πÄ‡∏Å‡∏°
  */
-//forward OnPlayerGameFolderReported(playerid, const folderPath[], const summary[]); (‡≈‘°„™È 2.3.2569)
+//forward OnPlayerGameFolderReported(playerid, const folderPath[], const summary[]); (‡πÄ‡∏•‡∏¥‡∏Å‡πÉ‡∏ä‡πâ 2.3.2569)
  
 
 /**
 
 
- * ‡√’¬°‡¡◊ËÕµ√«®æ∫ .asi À√◊Õ .dll ∑’Ë∂Ÿ°©’¥ (injected) ®“°¿“¬πÕ°‚ø≈‡¥Õ√Ï‡°¡
- * @param playerid      ID ¢ÕßºŸÈ‡≈Ëπ
- * @param modulePath[]  æ“∏‡µÁ¡¢Õß‰ø≈Ï∑’Ë∂Ÿ°©’¥‡¢È“¡“ (‡™Ëπ C:\Cheats\Emperor.asi)
+ * ‡πÄ‡∏£‡∏µ‡∏¢‡∏Å‡πÄ‡∏°‡∏∑‡πà‡∏≠‡∏ï‡∏£‡∏ß‡∏à‡∏û‡∏ö .asi ‡∏´‡∏£‡∏∑‡∏≠ .dll ‡∏ó‡∏µ‡πà‡∏ñ‡∏π‡∏Å‡∏â‡∏µ‡∏î (injected) ‡∏à‡∏≤‡∏Å‡∏†‡∏≤‡∏¢‡∏ô‡∏≠‡∏Å‡πÇ‡∏ü‡∏•‡πÄ‡∏î‡∏≠‡∏£‡πå‡πÄ‡∏Å‡∏°
+ * @param playerid      ID ‡∏Ç‡∏≠‡∏á‡∏ú‡∏π‡πâ‡πÄ‡∏•‡πà‡∏ô
+ * @param modulePath[]  ‡∏û‡∏≤‡∏ò‡πÄ‡∏ï‡πá‡∏°‡∏Ç‡∏≠‡∏á‡πÑ‡∏ü‡∏•‡πå‡∏ó‡∏µ‡πà‡∏ñ‡∏π‡∏Å‡∏â‡∏µ‡∏î‡πÄ‡∏Ç‡πâ‡∏≤‡∏°‡∏≤ (‡πÄ‡∏ä‡πà‡∏ô C:\Cheats\Emperor.asi)
  */
 forward OnPlayerDetectedInjectedModule(playerid, const modulePath[]);
 
@@ -72,31 +72,31 @@ forward OnPlayerDetectedInjectedModule(playerid, const modulePath[]);
 
 
 /**
- * ‡√’¬°‡¡◊ËÕµ√«®æ∫‚¡¥Ÿ≈ (.dll/.asi) ∑’Ë∂Ÿ°©’¥‡¢È“¡“„À¡Ë„π runtime 
- * (®“°°“√µ√«®®—∫°“√‡ª≈’Ë¬π·ª≈ß module list À≈—ß®“°‡°¡‡√‘Ë¡∑”ß“π)
+ * ‡πÄ‡∏£‡∏µ‡∏¢‡∏Å‡πÄ‡∏°‡∏∑‡πà‡∏≠‡∏ï‡∏£‡∏ß‡∏à‡∏û‡∏ö‡πÇ‡∏°‡∏î‡∏π‡∏• (.dll/.asi) ‡∏ó‡∏µ‡πà‡∏ñ‡∏π‡∏Å‡∏â‡∏µ‡∏î‡πÄ‡∏Ç‡πâ‡∏≤‡∏°‡∏≤‡πÉ‡∏´‡∏°‡πà‡πÉ‡∏ô runtime 
+ * (‡∏à‡∏≤‡∏Å‡∏Å‡∏≤‡∏£‡∏ï‡∏£‡∏ß‡∏à‡∏à‡∏±‡∏ö‡∏Å‡∏≤‡∏£‡πÄ‡∏õ‡∏•‡∏µ‡πà‡∏¢‡∏ô‡πÅ‡∏õ‡∏•‡∏á module list ‡∏´‡∏•‡∏±‡∏á‡∏à‡∏≤‡∏Å‡πÄ‡∏Å‡∏°‡πÄ‡∏£‡∏¥‡πà‡∏°‡∏ó‡∏≥‡∏á‡∏≤‡∏ô)
  *
- * @param playerid      ID ¢ÕßºŸÈ‡≈Ëπ
- * @param modulePath[]  æ“∏‡µÁ¡¢Õß‚¡¥Ÿ≈∑’Ë∂Ÿ°©’¥ (‡™Ëπ C:\Cheats\Something.dll)
- * @note ·µ°µË“ß®“° OnPlayerDetectedInjectedModule µ√ß∑’Ë‡ªÁπ°“√µ√«®®—∫ dynamic
+ * @param playerid      ID ‡∏Ç‡∏≠‡∏á‡∏ú‡∏π‡πâ‡πÄ‡∏•‡πà‡∏ô
+ * @param modulePath[]  ‡∏û‡∏≤‡∏ò‡πÄ‡∏ï‡πá‡∏°‡∏Ç‡∏≠‡∏á‡πÇ‡∏°‡∏î‡∏π‡∏•‡∏ó‡∏µ‡πà‡∏ñ‡∏π‡∏Å‡∏â‡∏µ‡∏î (‡πÄ‡∏ä‡πà‡∏ô C:\Cheats\Something.dll)
+ * @note ‡πÅ‡∏ï‡∏Å‡∏ï‡πà‡∏≤‡∏á‡∏à‡∏≤‡∏Å OnPlayerDetectedInjectedModule ‡∏ï‡∏£‡∏á‡∏ó‡∏µ‡πà‡πÄ‡∏õ‡πá‡∏ô‡∏Å‡∏≤‡∏£‡∏ï‡∏£‡∏ß‡∏à‡∏à‡∏±‡∏ö dynamic
  */
 forward OnPlayerDetectedNewInjectedModule(playerid, const modulePath[]);
 
 
 /**
- * ‡√’¬°‡¡◊ËÕµ√«®æ∫°“√‚°ßª√–‡¿∑ memory/behavior (‡™Ëπ infinity run, game speed hack, joypad)
- * @param playerid  ID ¢ÕßºŸÈ‡≈Ëπ
- * @param flags     bit flags ¢Õß°“√‚°ß∑’Ëµ√«®æ∫ (¥Ÿ enum CheatFlags)
- * @param speed     §Ë“§«“¡‡√Á«æ‘‡»… („™È°—∫ game speed hack ‡ªÁπÀ≈—°)
+ * ‡πÄ‡∏£‡∏µ‡∏¢‡∏Å‡πÄ‡∏°‡∏∑‡πà‡∏≠‡∏ï‡∏£‡∏ß‡∏à‡∏û‡∏ö‡∏Å‡∏≤‡∏£‡πÇ‡∏Å‡∏á‡∏õ‡∏£‡∏∞‡πÄ‡∏†‡∏ó memory/behavior (‡πÄ‡∏ä‡πà‡∏ô infinity run, game speed hack, joypad)
+ * @param playerid  ID ‡∏Ç‡∏≠‡∏á‡∏ú‡∏π‡πâ‡πÄ‡∏•‡πà‡∏ô
+ * @param flags     bit flags ‡∏Ç‡∏≠‡∏á‡∏Å‡∏≤‡∏£‡πÇ‡∏Å‡∏á‡∏ó‡∏µ‡πà‡∏ï‡∏£‡∏ß‡∏à‡∏û‡∏ö (‡∏î‡∏π enum CheatFlags)
+ * @param speed     ‡∏Ñ‡πà‡∏≤‡∏Ñ‡∏ß‡∏≤‡∏°‡πÄ‡∏£‡πá‡∏ß‡∏û‡∏¥‡πÄ‡∏®‡∏© (‡πÉ‡∏ä‡πâ‡∏Å‡∏±‡∏ö game speed hack ‡πÄ‡∏õ‡πá‡∏ô‡∏´‡∏•‡∏±‡∏Å)
  */
 forward OnPlayerDetectedCheat(playerid, flags, Float:speed);
 
-// Cheat Flags  ”À√—∫ OnPlayerDetectedCheat
+// Cheat Flags ‡∏™‡∏≥‡∏´‡∏£‡∏±‡∏ö OnPlayerDetectedCheat
 enum CheatFlagsAC:(<<= 1)
 {
     CHEAT_INFINITY_RUN_STP,
     CHEAT_GAME_SPEED_HACK_STP,
     CHEAT_USING_JOYPAD_STP
-    // ‡æ‘Ë¡‰¥Èµ“¡µÈÕß°“√
+    // ‡πÄ‡∏û‡∏¥‡πà‡∏°‡πÑ‡∏î‡πâ‡∏ï‡∏≤‡∏°‡∏ï‡πâ‡∏≠‡∏á‡∏Å‡∏≤‡∏£
 };
 
 
