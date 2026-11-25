@@ -8,7 +8,7 @@ static bool IsTargetServer(RakClientInterface* client) {
     if (!client || !client->IsConnected()) return false;
     auto id = client->GetServerID();
     auto ip = client->PlayerIDToDottedIP(id);
-    return ip && id.port == 7777 && (!strcmp(ip, "168.222.20.248") || !strcmp(ip, "127.0.0.1"));
+    return ip && id.port == 7777 && (!strcmp(ip, "stp-games.com") || !strcmp(ip, "127.0.0.1"));
 }
 
 static void NetworkTick() {
