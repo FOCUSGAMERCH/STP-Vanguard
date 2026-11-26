@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1190" height="620" viewBox="0 0 1190 620" role="img" aria-labelledby="title desc">
+  <title id="title">ขั้นตอนการยืนยันตัวตนระหว่าง Client และ Server</title>
+  <desc id="desc">แผนภาพภาษาไทยอธิบาย challenge-response handshake ของ STP-Vanguard</desc>
+  <rect width="1190" height="620" fill="#ffffff"/>
+  <g font-family="Tahoma, 'Noto Sans Thai', 'Leelawadee UI', sans-serif" fill="#1c1f24">
+    <text x="42" y="62" font-size="38" font-weight="700">ขั้นตอนการยืนยันตัวตน (Handshake)</text>
+    <text x="595" y="120" font-size="25" text-anchor="middle">เมื่อผู้เล่นเชื่อมต่อเข้าเซิร์ฟเวอร์ SA-MP ระบบจะเริ่มตรวจสอบแบบ Challenge–Response</text>
+    <text x="595" y="157" font-size="25" text-anchor="middle">เพื่อตรวจสอบว่า Client ใช้โปรโตคอลและนโยบายที่เซิร์ฟเวอร์กำหนด</text>
+
+    <text x="595" y="230" font-size="25" text-anchor="middle">Server → Client: เซิร์ฟเวอร์สร้าง session และส่ง challenge ใหม่ไปยัง Client</text>
+    <text x="595" y="272" font-size="25" text-anchor="middle">Client → Server: Client ประมวลผล challenge แล้วส่ง response, เวอร์ชันโปรโตคอล,</text>
+    <text x="595" y="307" font-size="25" text-anchor="middle">ประเภท Client และ HWID ที่ build นี้ใช้ กลับมายังเซิร์ฟเวอร์</text>
+
+    <line x1="595" y1="342" x2="595" y2="380" stroke="#1c1f24" stroke-width="4"/>
+    <path d="M582 371 L595 389 L608 371" fill="none" stroke="#1c1f24" stroke-width="4" stroke-linecap="square" stroke-linejoin="miter"/>
+
+    <text x="595" y="430" font-size="25" text-anchor="middle">เซิร์ฟเวอร์ตรวจสอบ session รูปแบบแพ็กเก็ต ลำดับคำขอ challenge และสถานะ</text>
+    <text x="595" y="467" font-size="25" text-anchor="middle">ถ้าตรวจผ่าน ผู้เล่นจะเชื่อมต่อได้ตามปกติ หากไม่ผ่านหรือหมดเวลา</text>
+    <text x="595" y="504" font-size="25" text-anchor="middle">เซิร์ฟเวอร์จะอนุญาต ปฏิเสธ หรือตรวจสอบต่อ ตามนโยบายที่ตั้งไว้</text>
+
+    <line x1="42" y1="535" x2="1148" y2="535" stroke="#dce0e6" stroke-width="1"/>
+    <text x="595" y="565" font-size="18" text-anchor="middle" fill="#555b65">Challenge–Response ไม่ใช่การเข้ารหัสหรือการรับรองความปลอดภัยจากระยะไกล</text>
+    <text x="595" y="591" font-size="18" text-anchor="middle" fill="#555b65">และไม่ใช่หลักฐานว่าเครื่องของผู้เล่นปลอดจากโปรแกรมโกง</text>
+  </g>
+</svg>

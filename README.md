@@ -219,7 +219,7 @@ STP-Vanguard เป็นระบบ Anti-Cheat สำหรับเซิร�
 
 ก่อนตอบรับ Server จะตรวจขนาดและรูปแบบแพ็กเก็ต session เลขคำขอ ค่า challenge และสถานะ รุ่น 9.11.0 ไม่รองรับ handshake แบบเก่าของ 9.10.0 ต้องอัปเดต Client และ Server Plugin เป็นรุ่นที่เข้าคู่กัน
 
-![ภาพตัวอย่างขั้นตอน Handshake](docs/images/handshake-sequence.png)
+![ขั้นตอนการยืนยันตัวตนระหว่าง Client และ Server](docs/images/handshake-sequence-th.svg)
 
 challenge ช่วยป้องกันการนำคำตอบเก่ามาใช้ซ้ำ และช่วยยืนยันว่า Client กำลังสื่อสารกับโปรโตคอลที่คาดไว้ **แต่ไม่ใช่การเข้ารหัสแพ็กเก็ต ไม่ใช่ remote attestation และไม่ได้พิสูจน์ว่าเครื่องปลอดโปรโกง**
 
